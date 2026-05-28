@@ -1,4 +1,5 @@
 import streamlit as st
+from utils import apply_user_css
 from google import genai
 from dotenv import load_dotenv
 import os
@@ -6,46 +7,74 @@ import re
 import plotly.graph_objects as go
 
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-st.set_page_config(page_title="미래 생활 안정 시뮬레이션", page_icon="📅", layout="centered")
+@st.cache_resource
+def get_client():
+    return genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-if "user_type" not in st.session_state:
-    st.session_state.user_type = "고령층"
+client = get_client()
 
-user_type = st.selectbox("사용자 유형", ["고령층", "일반 사용자", "금융 초보자"], key="user_type")
+st.set_page_config(page_title="미래 생활 안정 시뮬레이션", page_icon="📅", layout="centered", initial_sidebar_state="collapsed")
 
-if user_type == "고령층":
-    st.markdown("""
-    <style>
-    .stApp, .stApp p, .stApp div, .stApp label, .stApp span { font-size: 20px !important; }
-    .stButton > button { font-size: 22px !important; height: 60px !important; width: 100% !important; }
-    .stTextInput input, .stTextArea textarea, .stNumberInput input { font-size: 20px !important; }
-    </style>
-    """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+header[data-testid="stHeader"] { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
 
-st.title("📅 미래 생활 안정 시뮬레이션")
-st.caption("자산·연금·생활비·의료비를 바탕으로 노후 생활 안정성을 예측합니다.")
-st.divider()
+st.session_state.setdefault("profile_age", 70)
+st.session_state.setdefault("profile_income", 80)
+st.session_state.setdefault("profile_asset", 20000)
+st.session_state.setdefault("profile_expense", 150)
+
+user_type = st.session_state.get("user_type", "고령층")
+apply_user_css(user_type)
+
+st.html(f"""
+<div style="width:100%;margin-bottom:20px;box-sizing:border-box;
+  background:linear-gradient(135deg,#0E7490 0%,#06B6D4 100%);
+  border-radius:16px;padding:24px 32px 20px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;">
+  <div style="margin-bottom:14px;">
+    <a href="/" style="color:rgba(255,255,255,0.75);text-decoration:none;font-size:13px;font-weight:500;">← 홈으로</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div style="font-size:42px;line-height:1;">📊</div>
+    <div>
+      <div style="font-size:{'28px' if user_type == '고령층' else '22px'};font-weight:800;color:white;line-height:1.2;">미래 생활 안정 시뮬레이션</div>
+      <div style="font-size:{'16px' if user_type == '고령층' else '13px'};color:rgba(255,255,255,0.82);margin-top:5px;line-height:1.6;">자산·연금·생활비·의료비를 바탕으로 노후 생활 안정성을 예측합니다.</div>
+    </div>
+  </div>
+</div>
+""")
 
 st.markdown("### 📋 정보 입력")
 
-with st.expander("👤 기본 정보", expanded=True):
+_age = st.session_state.get("profile_age", 70)
+_income = st.session_state.get("profile_income", 80)
+_asset = st.session_state.get("profile_asset", 20000)
+_expense = st.session_state.get("profile_expense", 150)
+st.info(f"📋 홈 프로필 적용 중 — {_age}세 | 월 소득 {_income}만원 | 금융 자산 {_asset:,}만원 | 월 생활비 {_expense}만원")
+
+with st.expander("👤 기본 정보", expanded=False):
     col1, col2 = st.columns(2)
     with col1:
-        age = st.number_input("나이", min_value=1, max_value=100, value=70)
+        age = st.number_input("나이", min_value=1, max_value=100, key="profile_age")
     with col2:
         health_status = st.selectbox("건강 상태", ["양호", "보통", "주의 필요"])
 
-with st.expander("💰 자산 정보 (필수)", expanded=True):
+with st.expander("💰 자산 정보 (필수)", expanded=False):
     col1, col2 = st.columns(2)
     with col1:
-        asset_financial = st.number_input("금융 자산 (만원)", min_value=0, value=20000, step=100,
-                                          help="예금, 적금, 주식 등 현금화 가능한 자산")
-        income = st.number_input("월 연금 / 월소득 (만원)", min_value=0, value=80, step=5)
+        asset_financial = st.number_input("금융 자산 (만원)", min_value=0, step=100,
+                                          help="예금, 적금, 주식 등 현금화 가능한 자산",
+                                          key="profile_asset")
+        income = st.number_input("월 연금 / 월소득 (만원)", min_value=0, step=5, key="profile_income")
     with col2:
         asset_real = st.text_input("부동산 자산", placeholder="예: 아파트 3억원 (자가)")
-        monthly_expense = st.number_input("월 생활비 (만원)", min_value=0, value=150, step=5)
+        monthly_expense = st.number_input("월 생활비 (만원)", min_value=0, step=5, key="profile_expense")
     medical = st.number_input("월 의료비 / 보험료 (만원)", min_value=0, value=30, step=5)
 with st.expander("➕ 추가 정보 (선택)", expanded=False):
     col1, col2 = st.columns(2)
@@ -125,19 +154,26 @@ if st.button("🔮 AI 시뮬레이션 시작", type="primary"):
 추천행동:
 (실천 가능한 행동 3가지. 번호 목록)
 
+핵심인사이트:
+(가장 중요한 사실 한 문장. 실제 연수·금액 포함. 예: "현재 추세로 약 8년 후 자산이 소진됩니다." 또는 "월 20만원만 더 아끼면 안정 구간을 유지할 수 있습니다.")
+
 쉬운설명:
 (쉽게 말하면 형식으로 3~4문장. 어르신도 바로 이해할 수 있게)
 
 """
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
-            result = response.text
+            try:
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=prompt
+                )
+                result = response.text
+            except Exception:
+                st.error("⚠️ AI 서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+                st.stop()
 
         def extract(label, text):
             escaped = re.escape(label)
-            pattern = rf"{escaped}:\s*(.*?)(?=\n\S[^\n]*:|\Z)"
+            pattern = rf"{escaped}:\s*(.*?)(?=\n[^\d\s][^\n]*:|\Z)"
             match = re.search(pattern, text, re.DOTALL)
             return match.group(1).strip() if match else ""
 
@@ -146,8 +182,9 @@ if st.button("🔮 AI 시뮬레이션 시작", type="primary"):
         pred_5     = extract("미래예측_현재~5년", result)
         pred_10    = extract("미래예측_5년~10년", result)
         pred_after = extract("미래예측_10년이후", result)
-        actions    = extract("추천행동", result)
-        easy       = extract("쉬운설명", result)
+        actions  = extract("추천행동", result)
+        insight  = extract("핵심인사이트", result)
+        easy     = extract("쉬운설명", result)
 
         st.divider()
 
@@ -158,6 +195,14 @@ if st.button("🔮 AI 시뮬레이션 시작", type="primary"):
             st.warning("🟡 노후 생활 안정도: 주의")
         else:
             st.success("🟢 노후 생활 안정도: 안정")
+
+        if insight:
+            if "위험" in risk:
+                st.error(f"📌 핵심 인사이트: {insight}")
+            elif "주의" in risk:
+                st.warning(f"📌 핵심 인사이트: {insight}")
+            else:
+                st.success(f"📌 핵심 인사이트: {insight}")
 
         # ② 월 현금흐름
         st.markdown("### 💰 월 현금흐름")
@@ -274,17 +319,14 @@ if st.button("🔮 AI 시뮬레이션 시작", type="primary"):
         )
         st.plotly_chart(fig_line, use_container_width=True)
 
-        # ③ 미래 예측 카드
+        # ③ 미래 예측
         st.markdown("### 📅 미래 예측")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.markdown("**현재 ~ 5년**")
+        tab1, tab2, tab3 = st.tabs(["현재 ~ 5년", "5년 ~ 10년", "10년 이후"])
+        with tab1:
             st.info(pred_5)
-        with col2:
-            st.markdown("**5년 ~ 10년**")
+        with tab2:
             st.warning(pred_10)
-        with col3:
-            st.markdown("**10년 이후**")
+        with tab3:
             st.error(pred_after)
 
         # ⑤ AI 추천 행동

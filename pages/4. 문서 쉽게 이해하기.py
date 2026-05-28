@@ -1,4 +1,5 @@
 import streamlit as st
+from utils import apply_user_css
 from google import genai
 from dotenv import load_dotenv
 import os
@@ -6,27 +7,43 @@ import re
 import base64
 
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-st.set_page_config(page_title="문서 쉽게 이해하기", page_icon="📄", layout="centered")
+@st.cache_resource
+def get_client():
+    return genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-if "user_type" not in st.session_state:
-    st.session_state.user_type = "고령층"
+client = get_client()
 
-user_type = st.selectbox("사용자 유형", ["고령층", "일반 사용자", "금융 초보자"], key="user_type")
+st.set_page_config(page_title="문서 쉽게 이해하기", page_icon="📄", layout="centered", initial_sidebar_state="collapsed")
 
-if user_type == "고령층":
-    st.markdown("""
-    <style>
-    .stApp, .stApp p, .stApp div, .stApp label, .stApp span { font-size: 20px !important; }
-    .stButton > button { font-size: 22px !important; height: 60px !important; width: 100% !important; }
-    .stTextInput input, .stTextArea textarea, .stNumberInput input { font-size: 20px !important; }
-    </style>
-    """, unsafe_allow_html=True)
+st.markdown("""
+<style>
+[data-testid="stSidebar"] { display: none !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+header[data-testid="stHeader"] { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
 
-st.title("📄 문서 쉽게 이해하기")
-st.caption("보험 약관, 대출 문서, 금융 안내문을 쉬운 말로 설명해드립니다.")
-st.divider()
+user_type = st.session_state.get("user_type", "고령층")
+apply_user_css(user_type)
+
+st.html(f"""
+<div style="width:100%;margin-bottom:20px;box-sizing:border-box;
+  background:linear-gradient(135deg,#5B21B6 0%,#8B5CF6 100%);
+  border-radius:16px;padding:24px 32px 20px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;">
+  <div style="margin-bottom:14px;">
+    <a href="/" style="color:rgba(255,255,255,0.75);text-decoration:none;font-size:13px;font-weight:500;">← 홈으로</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div style="font-size:42px;line-height:1;">📄</div>
+    <div>
+      <div style="font-size:{'28px' if user_type == '고령층' else '22px'};font-weight:800;color:white;line-height:1.2;">문서 쉽게 이해하기</div>
+      <div style="font-size:{'16px' if user_type == '고령층' else '13px'};color:rgba(255,255,255,0.82);margin-top:5px;line-height:1.6;">보험 약관, 대출 문서, 금융 안내문을 쉬운 말로 설명해드립니다.</div>
+    </div>
+  </div>
+</div>
+""")
 
 # ──────────────────────────────────────────────
 # 입력 방식 선택
@@ -101,9 +118,10 @@ if st.button("📖 AI 쉬운 설명 시작", type="primary"):
     if not has_file and not has_text:
         st.warning("파일을 업로드하거나 텍스트를 입력해주세요.")
     else:
-        with st.spinner("AI가 문서를 분석 중입니다..."):
+        try:
+            with st.spinner("AI가 문서를 분석 중입니다..."):
 
-            system_prompt = f"""당신은 고령 고객을 위한 금융 문서 해설 AI입니다.
+                system_prompt = f"""당신은 고령 고객을 위한 금융 문서 해설 AI입니다.
 사용자 유형: {user_type}
 - 고령층: 아주 쉬운 말, 짧은 문장, 일상 비유 활용
 - 일반 사용자: 핵심 위주 설명
@@ -128,41 +146,45 @@ if st.button("📖 AI 쉬운 설명 시작", type="primary"):
 주의사항:
 (조심해야 할 내용. 없으면 "특별한 주의사항 없음". 번호 목록)"""
 
-            # 파일 첨부 분석
-            if has_file:
-                file_bytes = uploaded_file.read()
-                file_type  = uploaded_file.type
-                b64        = base64.standard_b64encode(file_bytes).decode("utf-8")
+                # 파일 첨부 분석
+                if has_file:
+                    file_bytes = uploaded_file.read()
+                    file_type  = uploaded_file.type
+                    b64        = base64.standard_b64encode(file_bytes).decode("utf-8")
 
-                if file_type == "application/pdf":
-                    contents = [
-                        {"inline_data": {"mime_type": "application/pdf", "data": b64}},
-                        system_prompt
-                    ]
-                else:  # 이미지
-                    contents = [
-                        {"inline_data": {"mime_type": file_type, "data": b64}},
-                        system_prompt
-                    ]
+                    if file_type == "application/pdf":
+                        contents = [
+                            {"inline_data": {"mime_type": "application/pdf", "data": b64}},
+                            system_prompt
+                        ]
+                    else:  # 이미지
+                        contents = [
+                            {"inline_data": {"mime_type": file_type, "data": b64}},
+                            system_prompt
+                        ]
 
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=contents
-                )
+                    response = client.models.generate_content(
+                        model="gemini-2.5-flash",
+                        contents=contents
+                    )
 
-            # 텍스트 분석
-            else:
-                prompt = system_prompt + f"\n\n분석할 문서:\n{doc_text}"
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash",
-                    contents=prompt
-                )
+                # 텍스트 분석
+                else:
+                    prompt = system_prompt + f"\n\n분석할 문서:\n{doc_text}"
+                    response = client.models.generate_content(
+                        model="gemini-2.5-flash",
+                        contents=prompt
+                    )
 
-            result = response.text
+                result = response.text
+
+        except Exception:
+            st.error("⚠️ AI 서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.")
+            st.stop()
 
         def extract(label, text):
             escaped = re.escape(label)
-            pattern = rf"{escaped}:\s*(.*?)(?=\n\S[^\n]*:|\Z)"
+            pattern = rf"{escaped}:\s*(.*?)(?=\n[^\d\s][^\n]*:|\Z)"
             match = re.search(pattern, text, re.DOTALL)
             return match.group(1).strip() if match else ""
 
