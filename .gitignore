@@ -3,3 +3,6 @@ venv/
 __pycache__/
 *.pyc
 profile.json
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
