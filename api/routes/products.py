@@ -27,6 +27,14 @@ JB_PRODUCTS = """
 """
 
 
+def tone(user_type: str) -> str:
+    if user_type == "고령층":
+        return "고객님은 고령층입니다. 매우 쉬운 말로 설명하고, 어려운 금융 용어는 반드시 일상 언어로 풀어서 설명하세요. 문장은 짧고 명확하게."
+    elif user_type == "금융 초보자":
+        return "고객님은 금융 초보자입니다. 금융 용어가 나올 때마다 괄호 안에 간단히 설명을 덧붙이세요. 친근하고 교육적인 톤으로."
+    return "고객님은 일반 사용자입니다. 표준 금융 언어를 사용하되 핵심을 명확하게."
+
+
 class ProductRequest(BaseModel):
     age: int
     income: int
@@ -38,11 +46,13 @@ class ProductRequest(BaseModel):
     has_irp: str = "없음"
     tax_concern: str = "보통"
     has_loan: str = "없음"
+    user_type: str = "일반 사용자"
 
 
 @router.post("/products")
 def recommend(req: ProductRequest):
-    prompt = f"""당신은 고령 고객 전문 자산관리 AI입니다.
+    prompt = f"""당신은 자산관리 AI입니다.
+{tone(req.user_type)}
 
 고객 정보:
 - 나이: {req.age}세

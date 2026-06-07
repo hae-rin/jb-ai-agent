@@ -1,16 +1,20 @@
 import { useState } from 'react'
+import { useProfile } from '../context/ProfileContext'
 
 const EXAMPLES = [
   {
-    label: '⚠️ 사기 문자',
+    label: '사기 문자',
+    safe: false,
     text: `[국민은행] 고객님 계좌가 이상거래로 인해 일시정지 되었습니다.\n본인확인을 위해 아래 링크를 클릭하여 주민등록번호와 카드번호를 입력해 주세요.\nhttp://kb-safe-verify.xyz/confirm\n미처리시 계좌가 영구 동결됩니다.`,
   },
   {
-    label: '⚠️ 사기 전화',
+    label: '사기 전화',
+    safe: false,
     text: `검찰청 수사관입니다. 고객님 명의로 대포통장이 개설되어 현재 수사 중에 있습니다.\n지금 즉시 본인 계좌에 있는 돈을 안전계좌로 이체하지 않으면 전 재산이 동결됩니다.\n빨리 가까운 ATM으로 가셔서 010-9999-0000 계좌로 이체해 주세요.\n절대 가족에게 말하지 마세요.`,
   },
   {
-    label: '✅ 정상 문자',
+    label: '정상 문자',
+    safe: true,
     text: `[전북은행] 고객님의 정기예금 만기일이 7일 후(2025-02-01)입니다.\n만기 후 처리방법 선택은 인터넷뱅킹 또는 가까운 영업점을 방문해 주시기 바랍니다.\n문의: 1588-4477 (전북은행 고객센터)`,
   },
 ]
@@ -48,6 +52,7 @@ function HeroRobot() {
 }
 
 export default function VoicePhishing() {
+  const { profile } = useProfile()
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
@@ -60,7 +65,7 @@ export default function VoicePhishing() {
       const r = await fetch('/api/voice-phishing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, user_type: profile.user_type }),
       })
       if (!r.ok) throw new Error(await r.text())
       setResult(await r.json())
@@ -88,7 +93,6 @@ export default function VoicePhishing() {
           </div>
           <div className="relative flex-shrink-0 mr-4">
             <HeroRobot />
-            {/* 방패 */}
             <div className="absolute -top-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-16 h-14 flex items-center justify-center animate-float-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-9 h-9">
                 <path d="M16 4 L26 8 L26 17 Q26 24 16 28 Q6 24 6 17 L6 8 Z"
@@ -96,7 +100,6 @@ export default function VoicePhishing() {
                 <path d="M12 16 L15 19 L21 13" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
               </svg>
             </div>
-            {/* 전화 경고 */}
             <div className="absolute top-[38%] -right-2 w-11 h-11 bg-red-500 rounded-xl flex items-center justify-center shadow-lg animate-float-3">
               <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6">
                 <path d="M6 3 Q4 3 3 5 Q2 7 4 10 Q6 13 8 15 Q11 18 14 18 Q16 18 17 16 Q18 15 17 14 L15 12 Q14 11 13 12 L12 13 Q11 14 10 13 Q8 11 7 9 Q6 8 7 7 L8 6 Q9 5 8 4 Z"
@@ -105,7 +108,6 @@ export default function VoicePhishing() {
                 <text x="15" y="7" textAnchor="middle" fontSize="4.5" fill="#DC2626" fontWeight="bold">!</text>
               </svg>
             </div>
-            {/* 알림 */}
             <div className="absolute -bottom-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-14 h-12 flex items-center justify-center animate-float-4">
               <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
                 <path d="M16 4 Q22 4 24 10 L25 20 L7 20 L8 10 Q10 4 16 4 Z"
@@ -120,23 +122,55 @@ export default function VoicePhishing() {
 
       {/* Main */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-red-500 text-lg">🚨</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <path d="M8 2 L14 13 H2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.2" strokeLinejoin="round"/>
+                <rect x="7.3" y="5.5" width="1.4" height="4" rx="0.7" fill="#DC2626"/>
+                <circle cx="8" cy="11" r="0.7" fill="#DC2626"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">의심 내용 입력</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-red-100',    icon: '🔍', title: '사기 패턴 분석',  desc: '알려진 보이스피싱 패턴과 비교 분석' },
-                { bg: 'bg-orange-100', icon: '⚠️', title: '위험 신호 탐지',  desc: '긴급성 강요·계좌이체 요구 등 신호 탐지' },
-                { bg: 'bg-rose-100',   icon: '🛡️', title: '즉시 대응 안내',  desc: '위기 상황 시 즉각 취해야 할 행동 안내' },
+                {
+                  bg: 'bg-red-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <circle cx="9" cy="9" r="5.5" stroke="#DC2626" strokeWidth="1.3"/>
+                      <line x1="13" y1="13" x2="17" y2="17" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                  ),
+                  title: '사기 패턴 분석', desc: '알려진 보이스피싱 패턴과 비교 분석',
+                },
+                {
+                  bg: 'bg-orange-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 L18 16 H2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <rect x="9.2" y="7" width="1.6" height="5" rx="0.8" fill="#DC2626"/>
+                      <circle cx="10" cy="13.5" r="0.9" fill="#DC2626"/>
+                    </svg>
+                  ),
+                  title: '위험 신호 탐지', desc: '긴급성 강요·계좌이체 요구 등 신호 탐지',
+                },
+                {
+                  bg: 'bg-rose-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 L16 5.5 L16 11 Q16 16 10 18 Q4 16 4 11 L4 5.5 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <path d="M7 10.5 L9 12.5 L13.5 8" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    </svg>
+                  ),
+                  title: '즉시 대응 안내', desc: '위기 상황 시 즉각 취해야 할 행동 안내',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>{f.icon}</div>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>{f.icon}</div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{f.title}</p>
                     <p className="text-xs text-gray-400">{f.desc}</p>
@@ -145,15 +179,28 @@ export default function VoicePhishing() {
               ))}
             </div>
 
-            {/* 예시 버튼 */}
             <p className="text-xs text-gray-500 font-medium mb-2">예시 불러오기</p>
             <div className="flex flex-col gap-2 mb-4">
               {EXAMPLES.map(ex => (
                 <button key={ex.label} onClick={() => setContent(ex.text)}
-                  className={`text-sm px-3 py-2.5 rounded-xl border text-left transition-colors
-                    ${ex.label.startsWith('✅')
+                  className={`text-sm px-3 py-2.5 rounded-xl border text-left transition-colors flex items-center gap-2
+                    ${ex.safe
                       ? 'border-green-200 hover:bg-green-50 text-green-700'
                       : 'border-red-200 hover:bg-red-50 text-red-700'}`}>
+                  {ex.safe
+                    ? (
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0">
+                        <circle cx="8" cy="8" r="6" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                        <path d="M5 8 L7 10 L11 6" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    )
+                    : (
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0">
+                        <path d="M8 2 L14 13 H2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.2" strokeLinejoin="round"/>
+                        <rect x="7.3" y="5.5" width="1.4" height="4" rx="0.7" fill="#DC2626"/>
+                        <circle cx="8" cy="11" r="0.7" fill="#DC2626"/>
+                      </svg>
+                    )}
                   {ex.label}
                 </button>
               ))}
@@ -173,7 +220,13 @@ export default function VoicePhishing() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>🛡️ 바로 판단하기</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <path d="M10 2 L16 5.5 L16 11 Q16 16 10 18 Q4 16 4 11 L4 5.5 Z" fill="white" opacity="0.2" stroke="white" strokeWidth="1.2" strokeLinejoin="round"/>
+                  <path d="M7 10.5 L9 12.5 L13.5 8" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                </svg>
+                바로 판단하기
+              </span>
               <span className="text-xs font-normal text-red-200">AI가 즉시 위기 패턴으로 분석합니다</span>
             </button>
           </div>
@@ -181,7 +234,11 @@ export default function VoicePhishing() {
           {/* RIGHT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">📊</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#DC2626"/>
+                <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#DC2626"/>
+                <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#DC2626"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">판단 결과</h2>
             </div>
 
@@ -211,34 +268,78 @@ export default function VoicePhishing() {
 
             {result && (
               <div className="space-y-4">
-                {/* 메인 판정 */}
                 <div className={`rounded-xl p-5 border-2 ${isFraud ? 'border-red-400 bg-red-50' : isCaution ? 'border-amber-400 bg-amber-50' : 'border-green-400 bg-green-50'}`}>
-                  <p className={`text-lg font-black mb-1 ${isFraud ? 'text-red-700' : isCaution ? 'text-amber-700' : 'text-green-700'}`}>
-                    {isFraud ? '🚨 사기 시 즉시 전화를 끊으세요!'
-                      : isCaution ? '⚠️ 주의 — 섣불리 행동하지 마세요'
-                      : '✅ 정상으로 보입니다.'}
-                  </p>
-                  <p className={`text-sm font-medium ${isFraud ? 'text-red-600' : isCaution ? 'text-amber-600' : 'text-green-600'}`}>
+                  <div className={`text-lg font-black mb-1 flex items-center gap-2 ${isFraud ? 'text-red-700' : isCaution ? 'text-amber-700' : 'text-green-700'}`}>
+                    {isFraud
+                      ? (
+                        <>
+                          <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5 flex-shrink-0">
+                            <path d="M10 2 L18 16 H2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.3" strokeLinejoin="round"/>
+                            <rect x="9.2" y="7" width="1.6" height="5" rx="0.8" fill="#DC2626"/>
+                            <circle cx="10" cy="13.5" r="0.9" fill="#DC2626"/>
+                          </svg>
+                          사기 — 즉시 전화를 끊으세요!
+                        </>
+                      )
+                      : isCaution
+                      ? (
+                        <>
+                          <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5 flex-shrink-0">
+                            <path d="M10 2 L18 16 H2 Z" fill="#FEF3C7" stroke="#D97706" strokeWidth="1.3" strokeLinejoin="round"/>
+                            <rect x="9.2" y="7" width="1.6" height="5" rx="0.8" fill="#D97706"/>
+                            <circle cx="10" cy="13.5" r="0.9" fill="#D97706"/>
+                          </svg>
+                          주의 — 섣불리 행동하지 마세요
+                        </>
+                      )
+                      : (
+                        <>
+                          <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5 flex-shrink-0">
+                            <circle cx="10" cy="10" r="8" fill="#D1FAE5" stroke="#059669" strokeWidth="1.3"/>
+                            <path d="M6.5 10 L8.5 12 L13.5 7" stroke="#059669" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          정상으로 보입니다.
+                        </>
+                      )}
+                  </div>
+                  <p className={`text-base font-medium ${isFraud ? 'text-red-600' : isCaution ? 'text-amber-600' : 'text-green-600'}`}>
                     위험도: {result.risk}
                   </p>
                 </div>
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-2">🔍 발견된 위험 신호</p>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <circle cx="7" cy="7" r="4.5" stroke="#DC2626" strokeWidth="1.3"/>
+                      <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#DC2626" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">발견된 위험 신호</p>
+                  </div>
                   {result.signals && result.signals !== '이상 없음'
-                    ? <div className="alert-danger whitespace-pre-wrap text-sm">{result.signals}</div>
-                    : <div className="alert-success text-xs">식별된 위험 신호가 없습니다.</div>}
+                    ? <div className="alert-danger whitespace-pre-wrap text-base">{result.signals}</div>
+                    : <div className="alert-success text-sm">식별된 위험 신호가 없습니다.</div>}
                 </div>
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-2">💬 쉽게 말하면</p>
-                  <p className="text-xs text-gray-600 leading-relaxed">{result.easy}</p>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M2 3 Q2 2 3 2 L13 2 Q14 2 14 3 L14 10 Q14 11 13 11 L6 11 L3 14 L3 11 Q2 11 2 10 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.2"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">쉽게 말하면</p>
+                  </div>
+                  <p className="text-base text-gray-600 leading-relaxed">{result.easy}</p>
                 </div>
 
                 {result.actions && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">✅ 지금 해야 할 행동</p>
-                    <div className={`whitespace-pre-wrap text-sm ${isFraud || isCaution ? 'alert-danger' : 'alert-success'}`}>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="8" cy="8" r="6" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                        <path d="M5 8 L7 10 L11 6" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">지금 해야 할 행동</p>
+                    </div>
+                    <div className={`whitespace-pre-wrap text-base ${isFraud || isCaution ? 'alert-danger' : 'alert-success'}`}>
                       {result.actions}
                     </div>
                   </div>
@@ -246,12 +347,29 @@ export default function VoicePhishing() {
 
                 {(isFraud || isCaution) && (
                   <div className="border border-red-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-red-600 mb-3">📞 긴급 신고 연락처</p>
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M5 2 Q3.5 2 3 4 Q2 6 4 8.5 Q5.5 10.5 7.5 12.5 Q9.5 14.5 11.5 14 Q13 13.5 13 12 L11.5 10.5 Q11 10 10 10.5 L9.5 11 Q9 11.5 8.5 11 Q7 9.5 6.5 8 Q6 7.5 6.5 7 L7 6.5 Q7.5 6 7 5 Z" fill="#DC2626" opacity="0.8"/>
+                      </svg>
+                      <p className="text-sm font-bold text-red-600">긴급 신고 연락처</p>
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
-                      {[['🚨 금융감독원', '1332'], ['🚨 경찰청', '112'], ['🚨 금융범죄신고', '182']].map(([label, tel]) => (
+                      {[['금융감독원', '1332'], ['경찰청', '112'], ['금융범죄신고', '182']].map(([label, tel]) => (
                         <div key={tel} className="alert-danger text-center rounded-xl p-3">
-                          <p className="font-bold text-xs">{label}</p>
-                          <p className="text-xl font-black mt-1">📞 {tel}</p>
+                          <div className="flex items-center justify-center gap-1 mb-1">
+                            <svg viewBox="0 0 16 16" fill="none" className="w-3 h-3">
+                              <path d="M8 2 L14 13 H2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.2" strokeLinejoin="round"/>
+                              <rect x="7.3" y="5.5" width="1.4" height="4" rx="0.7" fill="#DC2626"/>
+                              <circle cx="8" cy="11" r="0.7" fill="#DC2626"/>
+                            </svg>
+                            <p className="font-bold text-sm">{label}</p>
+                          </div>
+                          <div className="flex items-center justify-center gap-1">
+                            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                              <path d="M5 2 Q3.5 2 3 4 Q2 6 4 8.5 Q5.5 10.5 7.5 12.5 Q9.5 14.5 11.5 14 Q13 13.5 13 12 L11.5 10.5 Q11 10 10 10.5 L9.5 11 Q9 11.5 8.5 11 Q7 9.5 6.5 8 Q6 7.5 6.5 7 L7 6.5 Q7.5 6 7 5 Z" fill="#DC2626" opacity="0.8"/>
+                            </svg>
+                            <p className="text-xl font-black">{tel}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -263,23 +381,20 @@ export default function VoicePhishing() {
         </div>
 
         {/* Tip bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">보이스피싱 예방 팁</p>
-              <p className="text-xs text-gray-500">어떤 기관도 전화·문자로 계좌 이체, 개인정보 입력을 요구하지 않습니다. 의심되면 즉시 신고 확인하세요</p>
-            </div>
-          </div>
-          <button className="flex items-center gap-1 text-xs text-red-600 font-medium hover:underline flex-shrink-0 ml-4">
-            더 알아보기
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1.3"/>
+              <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#DC2626"/>
+              <path d="M7 17 L13 17" stroke="#DC2626" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
-          </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-800">보이스피싱 예방 팁</p>
+            <p className="text-xs text-gray-500">어떤 기관도 전화·문자로 계좌 이체, 개인정보 입력을 요구하지 않습니다. 의심되면 즉시 신고 확인하세요</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

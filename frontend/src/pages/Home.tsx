@@ -6,10 +6,20 @@ import { useState } from 'react'
 // ── SVG Icons ─────────────────────────────────────────────────────
 function IconAgent() {
   return (
-    <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
-      <circle cx="16" cy="16" r="12" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.5"/>
-      <circle cx="16" cy="13" r="4" fill="#2563EB"/>
-      <path d="M8 26c0-4.4 3.58-8 8-8s8 3.6 8 8" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" fill="none"/>
+    <svg viewBox="0 0 32 32" fill="none" className="w-10 h-10">
+      <rect x="6" y="11" width="20" height="15" rx="5" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
+      <rect x="9" y="14" width="14" height="8" rx="2.5" fill="#0F172A"/>
+      <circle cx="13" cy="18" r="2" fill="#38BDF8"/>
+      <circle cx="13" cy="18" r="1" fill="#0EA5E9"/>
+      <circle cx="19" cy="18" r="2" fill="#38BDF8"/>
+      <circle cx="19" cy="18" r="1" fill="#0EA5E9"/>
+      <circle cx="11.5" cy="16.5" r="0.7" fill="white" opacity="0.7"/>
+      <circle cx="17.5" cy="16.5" r="0.7" fill="white" opacity="0.7"/>
+      <line x1="16" y1="11" x2="16" y2="7" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="16" cy="6" r="2" fill="#2563EB"/>
+      <circle cx="16" cy="6" r="1" fill="#93C5FD"/>
+      <rect x="3" y="13.5" width="3" height="5" rx="1.5" fill="white" stroke="#E2E8F0" strokeWidth="1.2"/>
+      <rect x="26" y="13.5" width="3" height="5" rx="1.5" fill="white" stroke="#E2E8F0" strokeWidth="1.2"/>
     </svg>
   )
 }
@@ -175,18 +185,75 @@ const SERVICES = [
   },
 ]
 
+function WhyShield() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+      <path d="M16 4 L26 8 L26 18 Q26 26 16 29 Q6 26 6 18 L6 8 Z" fill="#BFDBFE" stroke="#2563EB" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M12 17 L15 20 L21 14" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  )
+}
+function WhyLock() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+      <rect x="8" y="15" width="16" height="13" rx="3" fill="#BFDBFE" stroke="#2563EB" strokeWidth="1.5"/>
+      <path d="M11 15 L11 11 Q11 6 16 6 Q21 6 21 11 L21 15" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+      <circle cx="16" cy="21" r="2" fill="#2563EB"/>
+    </svg>
+  )
+}
+function WhyChart() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+      <rect x="4"  y="18" width="6" height="10" rx="1.5" fill="#93C5FD"/>
+      <rect x="13" y="12" width="6" height="16" rx="1.5" fill="#60A5FA"/>
+      <rect x="22" y="6"  width="6" height="22" rx="1.5" fill="#2563EB"/>
+    </svg>
+  )
+}
+function WhyStar() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6">
+      <path d="M16 4 L18 13 L27 16 L18 19 L16 28 L14 19 L5 16 L14 13 Z" fill="#BFDBFE" stroke="#2563EB" strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="24" cy="8" r="1.5" fill="#2563EB" opacity="0.6"/>
+      <circle cx="8"  cy="24" r="1"   fill="#2563EB" opacity="0.4"/>
+    </svg>
+  )
+}
+
 const WHY = [
-  { icon: '🛡️', bg: 'bg-blue-100',    title: '금융 사기 예방',    desc: 'AI가 위험 패턴을 분석하여 금융 사기를 예방합니다.' },
-  { icon: '🔒', bg: 'bg-violet-100',  title: '개인정보 보호',     desc: '강력한 보안으로 고객님의 정보를 안전하게 보호합니다.' },
-  { icon: '📊', bg: 'bg-cyan-100',    title: '맞춤 재무 분석',    desc: '내 자산과 생활비를 기반으로 노후 안정성을 분석합니다.' },
-  { icon: '✨', bg: 'bg-emerald-100', title: '24시간 AI 케어',    desc: '언제 어디서나 AI가 든든한 금융 동반자가 됩니다.' },
+  { Icon: WhyShield, bg: 'bg-blue-100', title: '금융 사기 예방',    desc: 'AI가 위험 패턴을 분석하여 금융 사기를 예방합니다.' },
+  { Icon: WhyLock,   bg: 'bg-blue-100', title: '개인정보 보호',     desc: '강력한 보안으로 고객님의 정보를 안전하게 보호합니다.' },
+  { Icon: WhyChart,  bg: 'bg-blue-100', title: '맞춤 재무 분석',    desc: '내 자산과 생활비를 기반으로 노후 안정성을 분석합니다.' },
+  { Icon: WhyStar,   bg: 'bg-blue-100', title: '24시간 AI 케어',    desc: '언제 어디서나 AI가 든든한 금융 동반자가 됩니다.' },
 ]
+
+// ── Tip tooltip (금융 초보자 전용) ────────────────────────────────
+function Tip({ text }: { text: string }) {
+  const [show, setShow] = useState(false)
+  return (
+    <span className="relative inline-block ml-1 align-middle">
+      <button
+        type="button"
+        className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold leading-none"
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onClick={() => setShow(s => !s)}
+      >?</button>
+      {show && (
+        <span className="absolute left-6 top-0 z-20 bg-slate-800 text-white text-xs rounded-xl px-3 py-2 w-52 leading-relaxed shadow-lg whitespace-normal">
+          {text}
+        </span>
+      )}
+    </span>
+  )
+}
 
 // ── Main ──────────────────────────────────────────────────────────
 export default function Home() {
   const nav = useNavigate()
   const { profile, saveProfile } = useProfile()
-  const { isElder } = useAdaptive()
+  const { isElder, isBeginner } = useAdaptive()
   const [profileOpen, setProfileOpen] = useState(false)
   const [saved, setSaved]   = useState(false)
   const [form, setForm]     = useState({
@@ -255,18 +322,33 @@ export default function Home() {
             <p className="text-sm font-semibold text-gray-700 mb-3">👤 내 프로필 설정 (전 페이지에서 자동 적용)</p>
             <div className="mb-3">
               <label className="label">사용자 유형</label>
-              <select
-                className="input-field max-w-xs"
-                value={form.user_type}
-                onChange={e => setForm(f => ({ ...f, user_type: e.target.value }))}
-              >
-                {['고령층', '일반 사용자', '금융 초보자'].map(t => <option key={t}>{t}</option>)}
-              </select>
+              <div className="relative inline-flex">
+                <select
+                  className="input-field appearance-none !w-auto pr-8 cursor-pointer"
+                  value={form.user_type}
+                  onChange={e => setForm(f => ({ ...f, user_type: e.target.value }))}
+                >
+                  {['고령층', '일반 사용자', '금융 초보자'].map(t => <option key={t}>{t}</option>)}
+                </select>
+                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                  <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-              {([['age','나이'],['income','월 소득/연금(만원)'],['asset','금융 자산(만원)'],['expense','월 생활비(만원)']] as [keyof typeof form, string][]).map(([k, l]) => (
+              {([
+                ['age',     '나이',              '현재 만 나이를 입력하세요.'],
+                ['income',  '월 소득/연금(만원)', '매달 받는 월급, 연금, 이자 등 모든 수입을 합쳐서 입력하세요.'],
+                ['asset',   '금융 자산(만원)',    '은행 통장, 적금, 주식, 펀드 등 현금으로 바꿀 수 있는 자산의 합계입니다.'],
+                ['expense', '월 생활비(만원)',    '식비, 교통비, 공과금, 의료비 등 한 달에 쓰는 돈의 합계입니다.'],
+              ] as [keyof typeof form, string, string][]).map(([k, l, tip]) => (
                 <div key={k}>
-                  <label className="label">{l}</label>
+                  <label className="label">
+                    {l}
+                    {isBeginner && <Tip text={tip} />}
+                  </label>
                   <input
                     type="text" inputMode="numeric" className="input-field"
                     value={form[k]}
@@ -276,7 +358,14 @@ export default function Home() {
               ))}
             </div>
             <div className="flex items-center gap-3">
-              <button onClick={handleSave} className="btn-primary text-sm py-2">💾 프로필 저장</button>
+              <button onClick={handleSave} className="btn-primary text-sm py-2 flex items-center gap-1.5">
+                <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                  <rect x="2" y="2" width="12" height="12" rx="2" stroke="white" strokeWidth="1.3"/>
+                  <rect x="5" y="2" width="6" height="4" rx="0.5" fill="white" opacity="0.4"/>
+                  <rect x="4" y="9" width="8" height="4" rx="1" fill="white" opacity="0.6"/>
+                </svg>
+                프로필 저장
+              </button>
               {saved && <span className="text-green-600 text-sm font-medium">저장되었습니다!</span>}
               <p className="text-gray-400 text-xs ml-auto">저장하면 앱을 껐다 켜도 설정이 유지됩니다.</p>
             </div>
@@ -299,11 +388,42 @@ export default function Home() {
               AI가 분석하고 맞춤 케어 플랜을 제안해드립니다.
             </p>
             <div className="flex flex-wrap gap-2.5 mb-8 animate-fade-in-up-3">
-              {['⏱ AI 맞춤 분석', '🛡 실시간 위험 감지', '📊 노후 생활 분석'].map(t => (
-                <span key={t}
+              {[
+                {
+                  label: 'AI 맞춤 분석',
+                  icon: (
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0">
+                      <circle cx="8" cy="8" r="6.5" stroke="#2563EB" strokeWidth="1.3"/>
+                      <line x1="8" y1="8" x2="8" y2="4" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round"/>
+                      <line x1="8" y1="8" x2="11" y2="10" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round"/>
+                      <circle cx="8" cy="8" r="1" fill="#2563EB"/>
+                    </svg>
+                  ),
+                },
+                {
+                  label: '실시간 위험 감지',
+                  icon: (
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0">
+                      <path d="M8 2 L13 4.5 L13 9 Q13 13 8 14.5 Q3 13 3 9 L3 4.5 Z" fill="#BFDBFE" stroke="#2563EB" strokeWidth="1.2" strokeLinejoin="round"/>
+                      <path d="M6 8.5 L7.5 10 L10.5 7" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                },
+                {
+                  label: '노후 생활 분석',
+                  icon: (
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0">
+                      <rect x="2"  y="9"  width="3" height="5" rx="0.8" fill="#2563EB"/>
+                      <rect x="6.5" y="6" width="3" height="8" rx="0.8" fill="#2563EB"/>
+                      <rect x="11" y="3"  width="3" height="11" rx="0.8" fill="#2563EB"/>
+                    </svg>
+                  ),
+                },
+              ].map(({ label, icon }) => (
+                <span key={label}
                   className={`inline-flex items-center gap-1.5 bg-white/85 backdrop-blur-sm
                              rounded-full px-4 py-2 ${isElder ? 'text-base' : 'text-sm'} text-gray-600 font-medium shadow-sm`}>
-                  {t}
+                  {icon}{label}
                 </span>
               ))}
             </div>
@@ -354,7 +474,18 @@ export default function Home() {
             {/* Card 4: AI 분석 완료 */}
             <div className="absolute bottom-4 right-2 bg-white rounded-2xl shadow-lg px-4 py-3 w-44 animate-float-4 z-20">
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-sm">🤖</span>
+                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 flex-shrink-0">
+                  <rect x="5" y="8" width="14" height="11" rx="3.5" fill="white" stroke="#E2E8F0" strokeWidth="1.2"/>
+                  <rect x="7" y="10" width="10" height="6" rx="2" fill="#0F172A"/>
+                  <circle cx="9.5" cy="13" r="1.5" fill="#38BDF8"/>
+                  <circle cx="9.5" cy="13" r="0.7" fill="#0EA5E9"/>
+                  <circle cx="14.5" cy="13" r="1.5" fill="#38BDF8"/>
+                  <circle cx="14.5" cy="13" r="0.7" fill="#0EA5E9"/>
+                  <line x1="12" y1="8" x2="12" y2="5.5" stroke="#94A3B8" strokeWidth="1.2" strokeLinecap="round"/>
+                  <circle cx="12" cy="4.5" r="1.5" fill="#2563EB"/>
+                  <rect x="3" y="10.5" width="2" height="3.5" rx="1" fill="white" stroke="#E2E8F0" strokeWidth="1"/>
+                  <rect x="19" y="10.5" width="2" height="3.5" rx="1" fill="white" stroke="#E2E8F0" strokeWidth="1"/>
+                </svg>
                 <p className="text-xs text-gray-400 font-medium">AI 분석 완료</p>
               </div>
               <p className="text-xs font-semibold text-gray-700">노후 자금 안정 구간</p>
@@ -396,8 +527,8 @@ export default function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {WHY.map(w => (
             <div key={w.title} className={`bg-gray-50 rounded-2xl ${isElder ? 'p-6' : 'p-5'} flex gap-3 items-start`}>
-              <div className={`${isElder ? 'w-14 h-14 text-2xl' : 'w-11 h-11 text-xl'} ${w.bg} rounded-full flex items-center justify-center flex-shrink-0`}>
-                {w.icon}
+              <div className={`${isElder ? 'w-14 h-14' : 'w-11 h-11'} ${w.bg} rounded-full flex items-center justify-center flex-shrink-0`}>
+                <w.Icon />
               </div>
               <div>
                 <p className={`${isElder ? 'text-base' : 'text-sm'} font-bold text-gray-800 mb-1`}>{w.title}</p>
@@ -410,7 +541,7 @@ export default function Home() {
 
       {/* ── Footer ── */}
       <footer className="border-t border-gray-200 py-7 text-center text-xs text-gray-400">
-        🛡️ &nbsp;© 2026 Slowfit. All rights reserved. &nbsp;|&nbsp; JB금융그룹 Fin:AI Challenge
+        © 2026 Slowfit. All rights reserved. &nbsp;|&nbsp; JB금융그룹 Fin:AI Challenge
       </footer>
 
     </div>

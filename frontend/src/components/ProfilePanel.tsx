@@ -85,30 +85,34 @@ export default function ProfilePanel() {
     <div className="card mb-6">
       <button
         onClick={handleToggle}
-        className="w-full flex items-center justify-between text-left"
+        className="flex items-center gap-0.5 text-left"
       >
         <span className="font-semibold text-gray-800">👤 내 프로필 설정</span>
-        <span className="text-gray-400 text-sm">{open ? '▲ 닫기' : '▼ 열기'}</span>
+        <svg viewBox="0 0 16 16" fill="none" className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+          <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </button>
 
       {open && (
         <div className="mt-4 space-y-4">
-          {isBeginner && (
-            <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-700">
-              💡 각 항목 옆의 <strong>?</strong> 버튼을 누르면 설명을 볼 수 있어요.
-            </div>
-          )}
           <div>
             <label className="label">사용자 유형</label>
-            <select
-              className="input-field"
-              value={form.user_type}
-              onChange={e => setForm(f => ({ ...f, user_type: e.target.value }))}
-            >
-              {['고령층', '일반 사용자', '금융 초보자'].map(t => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
+            <div className="relative inline-flex">
+              <select
+                className="input-field appearance-none !w-auto pr-8 cursor-pointer"
+                value={form.user_type}
+                onChange={e => setForm(f => ({ ...f, user_type: e.target.value }))}
+              >
+                {['고령층', '일반 사용자', '금융 초보자'].map(t => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
+                <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             {FIELDS.map(({ key, label, tip }) => (
@@ -128,8 +132,13 @@ export default function ProfilePanel() {
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={handleSave} className="btn-primary text-sm py-2">
-              💾 저장
+            <button onClick={handleSave} className="btn-primary text-sm py-2 flex items-center gap-1.5">
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="2" y="2" width="12" height="12" rx="2" stroke="white" strokeWidth="1.3"/>
+                <rect x="5" y="2" width="6" height="4" rx="0.5" fill="white" opacity="0.4"/>
+                <rect x="4" y="9" width="8" height="4" rx="1" fill="white" opacity="0.6"/>
+              </svg>
+              저장
             </button>
             {saved && <span className="text-green-600 text-sm font-medium">저장되었습니다!</span>}
           </div>

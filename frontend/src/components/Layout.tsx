@@ -2,13 +2,78 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import ProfilePanel from './ProfilePanel'
 
+function IconAgent() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <rect x="6" y="11" width="20" height="15" rx="5" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
+      <rect x="9" y="14" width="14" height="8" rx="2.5" fill="#0F172A"/>
+      <circle cx="13" cy="18" r="2" fill="#38BDF8"/>
+      <circle cx="13" cy="18" r="1" fill="#0EA5E9"/>
+      <circle cx="19" cy="18" r="2" fill="#38BDF8"/>
+      <circle cx="19" cy="18" r="1" fill="#0EA5E9"/>
+      <circle cx="11.5" cy="16.5" r="0.7" fill="white" opacity="0.7"/>
+      <circle cx="17.5" cy="16.5" r="0.7" fill="white" opacity="0.7"/>
+      <line x1="16" y1="11" x2="16" y2="7" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="16" cy="6" r="2" fill="#2563EB"/>
+      <circle cx="16" cy="6" r="1" fill="#93C5FD"/>
+      <rect x="3" y="13.5" width="3" height="5" rx="1.5" fill="white" stroke="#E2E8F0" strokeWidth="1.2"/>
+      <rect x="26" y="13.5" width="3" height="5" rx="1.5" fill="white" stroke="#E2E8F0" strokeWidth="1.2"/>
+    </svg>
+  )
+}
+function IconSim() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <rect x="4"  y="18" width="6" height="10" rx="1.5" fill="#0891B2"/>
+      <rect x="13" y="12" width="6" height="16" rx="1.5" fill="#0891B2"/>
+      <rect x="22" y="6"  width="6" height="22" rx="1.5" fill="#0891B2"/>
+    </svg>
+  )
+}
+function IconBucket() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <polygon points="16,3 19.5,12 29,12 21.5,18 24,27 16,21.5 8,27 10.5,18 3,12 12.5,12" fill="#FDE68A" stroke="#D97706" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+function IconPhishing() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <path d="M16 3 L29 27 H3 Z" fill="#FEE2E2" stroke="#EF4444" strokeWidth="1.5" strokeLinejoin="round"/>
+      <rect x="14.5" y="12" width="3" height="8" rx="1.5" fill="#EF4444"/>
+      <circle cx="16" cy="23" r="1.5" fill="#EF4444"/>
+    </svg>
+  )
+}
+function IconDoc() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <rect x="6" y="2" width="20" height="28" rx="3" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.5"/>
+      <line x1="10" y1="11" x2="22" y2="11" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="10" y1="16" x2="22" y2="16" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round"/>
+      <line x1="10" y1="21" x2="17" y2="21" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+  )
+}
+function IconDiamond() {
+  return (
+    <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+      <path d="M16 28 L3 14 L7 5 H25 L29 14 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.5" strokeLinejoin="round"/>
+      <line x1="3" y1="14" x2="29" y2="14" stroke="#059669" strokeWidth="1.5"/>
+      <path d="M10 5 L8 14 L16 28" stroke="#059669" strokeWidth="1" opacity="0.5"/>
+      <path d="M22 5 L24 14 L16 28" stroke="#059669" strokeWidth="1" opacity="0.5"/>
+    </svg>
+  )
+}
+
 const NAV = [
-  { emoji: '🤖', label: 'AI 종합 케어 에이전트',    path: '/care-agent',     bg: 'bg-blue-100'    },
-  { emoji: '📊', label: '미래 생활 안정 시뮬레이션', path: '/simulation',     bg: 'bg-cyan-100'    },
-  { emoji: '🌟', label: '노후 버킷리스트',           path: '/bucket-list',    bg: 'bg-amber-100'   },
-  { emoji: '🚨', label: '보이스피싱 즉시 판단',      path: '/voice-phishing', bg: 'bg-red-100'     },
-  { emoji: '📄', label: '문서 쉽게 이해하기',        path: '/doc-reader',     bg: 'bg-violet-100'  },
-  { emoji: '💎', label: '맞춤 금융 상품 추천',       path: '/products',       bg: 'bg-emerald-100' },
+  { Icon: IconAgent,    label: 'AI 종합 케어 에이전트',    path: '/care-agent',     bg: 'bg-blue-100'    },
+  { Icon: IconSim,      label: '미래 생활 안정 시뮬레이션', path: '/simulation',     bg: 'bg-cyan-100'    },
+  { Icon: IconBucket,   label: '노후 버킷리스트',           path: '/bucket-list',    bg: 'bg-amber-100'   },
+  { Icon: IconPhishing, label: '보이스피싱 즉시 판단',      path: '/voice-phishing', bg: 'bg-red-100'     },
+  { Icon: IconDoc,      label: '문서 쉽게 이해하기',        path: '/doc-reader',     bg: 'bg-violet-100'  },
+  { Icon: IconDiamond,  label: '맞춤 금융 상품 추천',       path: '/products',       bg: 'bg-emerald-100' },
 ]
 
 function ShieldIllustration() {
@@ -48,12 +113,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-500">
-            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
-              <path d="M10 2a6 6 0 0 0-6 6v2l-1.5 3h15L16 10V8a6 6 0 0 0-6-6zM8 17a2 2 0 0 0 4 0"
-                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-          </button>
           <button
             onClick={() => setProfileOpen(o => !o)}
             className="flex items-center gap-2 text-sm font-medium text-gray-600
@@ -114,8 +173,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  <div className={`w-8 h-8 ${active ? 'bg-blue-100' : item.bg} rounded-full flex items-center justify-center text-base flex-shrink-0`}>
-                    {item.emoji}
+                  <div className={`w-8 h-8 ${item.bg} rounded-full flex items-center justify-center flex-shrink-0`}>
+                    <item.Icon />
                   </div>
                   <span className={`text-sm font-medium leading-snug ${active ? 'font-semibold' : ''}`}>{item.label}</span>
                   {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600"/>}

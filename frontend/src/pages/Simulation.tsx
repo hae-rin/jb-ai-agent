@@ -66,6 +66,7 @@ export default function Simulation() {
           monthly_expense: profile.expense, medical,
           asset_real: assetReal, has_family: hasFamily,
           has_loan: hasLoan, family_contact: familyContact,
+          user_type: profile.user_type,
         }),
       })
       if (!r.ok) throw new Error(await r.text())
@@ -96,24 +97,24 @@ export default function Simulation() {
           </div>
           <div className="relative flex-shrink-0 mr-4">
             <HeroRobot />
-            {/* 꺾은선 그래프 */}
             <div className="absolute -top-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-16 h-14 flex items-center justify-center animate-float-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-9 h-9">
-                <polyline points="4,24 10,16 16,20 22,10 28,6"
-                  stroke="#0891B2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <polyline points="4,24 10,16 16,20 22,10 28,6" stroke="#0891B2" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
                 <circle cx="28" cy="6" r="2.5" fill="#0891B2"/>
                 <line x1="4" y1="26" x2="28" y2="26" stroke="#E2E8F0" strokeWidth="1.5"/>
               </svg>
             </div>
-            {/* 저금/자산 */}
             <div className="absolute top-[38%] -right-2 w-11 h-11 bg-cyan-500 rounded-xl flex items-center justify-center shadow-lg animate-float-3">
               <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6">
-                <circle cx="10" cy="10" r="8" stroke="white" strokeWidth="1.5"/>
-                <path d="M10 6v1m0 6v1M7.5 10c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5"
-                  stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                <rect x="1.5" y="5.5" width="17" height="9" rx="1.5" stroke="white" strokeWidth="1.5"/>
+                <circle cx="10" cy="10" r="2.5" stroke="white" strokeWidth="1.2"/>
+                <path d="M8.5 8.5 L9 11.5 L10 9 L11 11.5 L11.5 8.5" stroke="white" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="3" y1="8.5" x2="5.5" y2="8.5" stroke="white" strokeWidth="0.9" strokeLinecap="round" opacity="0.7"/>
+                <line x1="3" y1="11.5" x2="5.5" y2="11.5" stroke="white" strokeWidth="0.9" strokeLinecap="round" opacity="0.7"/>
+                <line x1="14.5" y1="8.5" x2="17" y2="8.5" stroke="white" strokeWidth="0.9" strokeLinecap="round" opacity="0.7"/>
+                <line x1="14.5" y1="11.5" x2="17" y2="11.5" stroke="white" strokeWidth="0.9" strokeLinecap="round" opacity="0.7"/>
               </svg>
             </div>
-            {/* 입력/기간 */}
             <div className="absolute -bottom-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-14 h-12 flex items-center justify-center animate-float-4">
               <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
                 <rect x="4" y="6" width="24" height="22" rx="4" stroke="#0891B2" strokeWidth="2"/>
@@ -131,25 +132,60 @@ export default function Simulation() {
 
       {/* Main */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-cyan-500 text-lg">📊</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#0891B2"/>
+                <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#0891B2"/>
+                <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#0891B2"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">시뮬레이션 설정</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-cyan-100',    icon: '💰', title: '현금흐름 분석',  desc: '월 수입·지출·의료비 기반 흑자/적자 계산' },
-                { bg: 'bg-blue-100',    icon: '📈', title: '자산 장기 예측', desc: '30년간 금융 자산 증감 시뮬레이션' },
-                { bg: 'bg-indigo-100',  icon: '⚠️', title: '위험 시나리오',  desc: '자산 소진 시점·위험 구간 미리 파악' },
+                {
+                  bg: 'bg-cyan-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <rect x="1.5" y="5.5" width="17" height="9" rx="1.5" fill="#CFFAFE" stroke="#0891B2" strokeWidth="1.3"/>
+                      <circle cx="10" cy="10" r="2.5" fill="white" stroke="#0891B2" strokeWidth="1.1"/>
+                      <path d="M8.5 8.5 L9 11.5 L10 9 L11 11.5 L11.5 8.5" stroke="#0891B2" strokeWidth="0.9" strokeLinecap="round" strokeLinejoin="round"/>
+                      <line x1="3" y1="8.5" x2="5.5" y2="8.5" stroke="#0891B2" strokeWidth="0.9" strokeLinecap="round" opacity="0.6"/>
+                      <line x1="3" y1="11.5" x2="5.5" y2="11.5" stroke="#0891B2" strokeWidth="0.9" strokeLinecap="round" opacity="0.6"/>
+                      <line x1="14.5" y1="8.5" x2="17" y2="8.5" stroke="#0891B2" strokeWidth="0.9" strokeLinecap="round" opacity="0.6"/>
+                      <line x1="14.5" y1="11.5" x2="17" y2="11.5" stroke="#0891B2" strokeWidth="0.9" strokeLinecap="round" opacity="0.6"/>
+                    </svg>
+                  ),
+                  title: '현금흐름 분석', desc: '월 수입·지출·의료비 기반 흑자/적자 계산',
+                },
+                {
+                  bg: 'bg-blue-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <polyline points="3,14 7,9 11,11 15,5 18,3" stroke="#2563EB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                      <circle cx="18" cy="3" r="1.5" fill="#2563EB"/>
+                    </svg>
+                  ),
+                  title: '자산 장기 예측', desc: '30년간 금융 자산 증감 시뮬레이션',
+                },
+                {
+                  bg: 'bg-indigo-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 L17 15 H3 Z" fill="#E0E7FF" stroke="#4F46E5" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <rect x="9.2" y="7" width="1.6" height="4.5" rx="0.8" fill="#4F46E5"/>
+                      <circle cx="10" cy="13" r="0.8" fill="#4F46E5"/>
+                    </svg>
+                  ),
+                  title: '위험 시나리오', desc: '자산 소진 시점·위험 구간 미리 파악',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>
-                    {f.icon}
-                  </div>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>{f.icon}</div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{f.title}</p>
                     <p className="text-xs text-gray-400">{f.desc}</p>
@@ -207,7 +243,17 @@ export default function Simulation() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>🔮 {isElder ? 'AI 분석 시작' : 'AI 시뮬레이션 시작'}</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <circle cx="10" cy="10" r="8" fill="white" opacity="0.2" stroke="white" strokeWidth="1.2"/>
+                  <circle cx="10" cy="10" r="4" fill="white" opacity="0.6"/>
+                  <circle cx="10" cy="4" r="1.5" fill="white"/>
+                  <circle cx="10" cy="16" r="1.5" fill="white"/>
+                  <circle cx="4" cy="10" r="1.5" fill="white"/>
+                  <circle cx="16" cy="10" r="1.5" fill="white"/>
+                </svg>
+                {isElder ? 'AI 분석 시작' : 'AI 시뮬레이션 시작'}
+              </span>
               <span className="text-xs font-normal text-cyan-200">30년 후 안정성을 예측합니다</span>
             </button>
           </div>
@@ -215,7 +261,11 @@ export default function Simulation() {
           {/* RIGHT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">📊</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#0891B2"/>
+                <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#0891B2"/>
+                <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#0891B2"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">시뮬레이션 결과</h2>
             </div>
 
@@ -245,71 +295,88 @@ export default function Simulation() {
             )}
 
             {result && (
-              <div className="space-y-4 overflow-y-auto max-h-[600px] pr-1">
+              <div className="space-y-4">
                 <div className={`rounded-xl p-3 text-sm font-bold flex items-center gap-2
                   ${result.risk.includes('위험') ? 'alert-danger' : result.risk.includes('주의') ? 'alert-warning' : 'alert-success'}`}>
-                  {result.risk.includes('위험') ? '🔴' : result.risk.includes('주의') ? '🟡' : '🟢'}
+                  <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${result.risk.includes('위험') ? 'bg-red-500' : result.risk.includes('주의') ? 'bg-amber-500' : 'bg-green-500'}`}/>
                   노후 생활 안정성: {result.risk}
                 </div>
 
                 {isElder && result.easy && (
                   <div className="border border-cyan-200 bg-cyan-50 rounded-xl p-3">
-                    <p className="text-xs font-bold text-cyan-700 mb-1">📊 핵심 요약</p>
-                    <p className="text-sm text-cyan-900 leading-relaxed">{result.easy}</p>
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#0891B2"/>
+                        <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#0891B2"/>
+                        <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#0891B2"/>
+                      </svg>
+                      <p className="text-sm font-bold text-cyan-700">핵심 요약</p>
+                    </div>
+                    <p className="text-base text-cyan-900 leading-relaxed">{result.easy}</p>
                   </div>
                 )}
 
                 {result.insight && (
-                  <div className={`rounded-xl p-3 text-xs leading-relaxed
+                  <div className={`rounded-xl p-3 text-sm leading-relaxed flex items-start gap-2
                     ${result.risk.includes('위험') ? 'alert-danger' : result.risk.includes('주의') ? 'alert-warning' : 'alert-success'}`}>
-                    💡 {result.insight}
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0 mt-0.5">
+                      <path d="M8 1.5 Q11 1.5 11 4.5 Q11 6.5 9 7.5 L9 9.5 L7 9.5 L7 7.5 Q5 6.5 5 4.5 Q5 1.5 8 1.5 Z" fill="currentColor" opacity="0.6"/>
+                      <rect x="7" y="10.5" width="2" height="1.5" rx="0.5" fill="currentColor"/>
+                      <line x1="6" y1="13.5" x2="10" y2="13.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+                    </svg>
+                    {result.insight}
                   </div>
                 )}
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-2">💰 월 현금흐름</p>
-                  <div className={`mb-2 rounded-lg p-2.5 text-xs font-medium ${result.monthly_shortage > 0 ? 'alert-danger' : 'alert-success'}`}>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <circle cx="8" cy="8" r="6.5" fill="#CFFAFE" stroke="#0891B2" strokeWidth="1.2"/>
+                      <path d="M8 5v1m0 4v1M6 8c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2" stroke="#0891B2" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">월 현금흐름</p>
+                  </div>
+                  <div className={`mb-2 rounded-lg p-2.5 text-sm font-medium ${result.monthly_shortage > 0 ? 'alert-danger' : 'alert-success'}`}>
                     {result.monthly_shortage > 0
                       ? `매달 약 ${result.monthly_shortage}만원이 부족합니다.`
                       : `매달 약 ${Math.abs(result.monthly_shortage)}만원이 남습니다.`}
                   </div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{result.cashflow}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{result.cashflow}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="border border-gray-100 rounded-xl p-3">
-                    <p className="text-xs font-bold text-gray-500 mb-2">수입 vs 지출</p>
-                    <ResponsiveContainer width="100%" height={140}>
+                    <p className="text-sm font-bold text-gray-500 mb-2">수입 vs 지출</p>
+                    <ResponsiveContainer width="100%" height={220}>
                       <BarChart data={[
                         { label: '수입', value: profile.income },
                         { label: '지출', value: profile.expense + medical },
-                      ]} margin={{ top: 16, right: 8, bottom: 0, left: -20 }}>
+                      ]} margin={{ top: 28, right: 16, bottom: 0, left: -8 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                        <XAxis dataKey="label" tick={{ fontSize: 11 }}/>
-                        <YAxis tick={{ fontSize: 10 }} unit="만"/>
+                        <XAxis dataKey="label" tick={{ fontSize: 12 }}/>
+                        <YAxis tick={{ fontSize: 11 }} unit="만"/>
                         <Tooltip formatter={(v: number) => [`${v}만원`]}/>
                         <Bar dataKey="value" radius={[6, 6, 0, 0]}
                           fill={result.monthly_shortage > 0 ? '#EF4444' : '#22C55E'}
-                          label={{ position: 'top', fontSize: 10, formatter: (v: number) => `${v}만`}}/>
+                          label={{ position: 'top', fontSize: 12, formatter: (v: number) => `${v}만`}}/>
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
 
-                  {!isElder && (
-                    <div className="border border-gray-100 rounded-xl p-3">
-                      <p className="text-xs font-bold text-gray-500 mb-2">자산 추이 (30년)</p>
+                  <div className="border border-gray-100 rounded-xl p-3">
+                      <p className="text-sm font-bold text-gray-500 mb-2">자산 추이 (30년)</p>
                       {(() => {
                         const maxA = Math.max(...result.assets_over_time, 1)
                         const data = result.assets_over_time.map((v, i) => ({ year: i, asset: v }))
                         return (
-                          <ResponsiveContainer width="100%" height={140}>
-                            <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -28 }}>
+                          <ResponsiveContainer width="100%" height={220}>
+                            <LineChart data={data} margin={{ top: 16, right: 16, bottom: 0, left: -16 }}>
                               <ReferenceArea y1={0} y2={maxA * 0.3} fill="#FEE2E2" fillOpacity={0.4}/>
                               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9"/>
-                              <XAxis dataKey="year" unit="년" tick={{ fontSize: 10 }} ticks={[0, 10, 20, 30]}/>
-                              <YAxis tick={{ fontSize: 9 }} tickFormatter={v => `${(v/10000).toFixed(0)}억`}/>
+                              <XAxis dataKey="year" unit="년" tick={{ fontSize: 11 }} ticks={[0, 10, 20, 30]}/>
+                              <YAxis tick={{ fontSize: 11 }} tickFormatter={v => `${(v/10000).toFixed(0)}억`}/>
                               <Tooltip formatter={(v: number) => [v >= 10000 ? `${(v/10000).toFixed(1)}억` : `${v}만`, '자산']}/>
-                              <Legend wrapperStyle={{ fontSize: 10 }}/>
+                              <Legend wrapperStyle={{ fontSize: 11 }}/>
                               {result.sustain_years && result.sustain_years <= 30 && (
                                 <ReferenceLine x={result.sustain_years} stroke="#DC2626" strokeDasharray="4 4"
                                   label={{ value: `소진 ${result.sustain_years}년`, position: 'top', fontSize: 9, fill: '#DC2626' }}/>
@@ -321,17 +388,26 @@ export default function Simulation() {
                         )
                       })()}
                     </div>
-                  )}
                 </div>
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-3">🔮 미래 예측</p>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <circle cx="8" cy="8" r="6" fill="#CFFAFE" stroke="#0891B2" strokeWidth="1.2"/>
+                      <circle cx="8" cy="8" r="2.5" fill="#0891B2"/>
+                      <line x1="8" y1="2" x2="8" y2="4.5" stroke="#0891B2" strokeWidth="1.2" strokeLinecap="round"/>
+                      <line x1="8" y1="11.5" x2="8" y2="14" stroke="#0891B2" strokeWidth="1.2" strokeLinecap="round"/>
+                      <line x1="2" y1="8" x2="4.5" y2="8" stroke="#0891B2" strokeWidth="1.2" strokeLinecap="round"/>
+                      <line x1="11.5" y1="8" x2="14" y2="8" stroke="#0891B2" strokeWidth="1.2" strokeLinecap="round"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">미래 예측</p>
+                  </div>
                   {isElder ? (
                     <div className="space-y-2">
                       {TABS.map((t, i) => (
                         <div key={t}>
-                          <p className="text-xs font-bold text-gray-400 mb-1">{t}</p>
-                          <div className={`whitespace-pre-wrap text-sm p-2.5 rounded-lg ${i === 0 ? 'alert-info' : i === 1 ? 'alert-warning' : 'alert-danger'}`}>
+                          <p className="text-sm font-bold text-gray-400 mb-1">{t}</p>
+                          <div className={`whitespace-pre-wrap text-base p-2.5 rounded-lg ${i === 0 ? 'alert-info' : i === 1 ? 'alert-warning' : 'alert-danger'}`}>
                             {tabContent[i]}
                           </div>
                         </div>
@@ -342,12 +418,12 @@ export default function Simulation() {
                       <div className="flex gap-1 mb-2">
                         {TABS.map((t, i) => (
                           <button key={t} onClick={() => setTab(i)}
-                            className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${tab === i ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
+                            className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === i ? 'bg-cyan-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
                             {t}
                           </button>
                         ))}
                       </div>
-                      <div className={`whitespace-pre-wrap text-sm p-2.5 rounded-lg ${tab === 0 ? 'alert-info' : tab === 1 ? 'alert-warning' : 'alert-danger'}`}>
+                      <div className={`whitespace-pre-wrap text-base p-2.5 rounded-lg ${tab === 0 ? 'alert-info' : tab === 1 ? 'alert-warning' : 'alert-danger'}`}>
                         {tabContent[tab]}
                       </div>
                     </>
@@ -356,15 +432,26 @@ export default function Simulation() {
 
                 {result.actions && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">{isElder ? '✅ 지금 해야 할 것' : '🎯 AI 추천 행동'}</p>
-                    <div className="alert-success whitespace-pre-wrap text-sm">{result.actions}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="8" cy="8" r="6" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                        <path d="M5 8 L7 10 L11 6" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">{isElder ? '지금 해야 할 것' : 'AI 추천 행동'}</p>
+                    </div>
+                    <div className="alert-success whitespace-pre-wrap text-base">{result.actions}</div>
                   </div>
                 )}
 
                 {!isElder && result.easy && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">💬 쉽게 말하면</p>
-                    <p className="text-xs text-gray-600 leading-relaxed">{result.easy}</p>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M2 3 Q2 2 3 2 L13 2 Q14 2 14 3 L14 10 Q14 11 13 11 L6 11 L3 14 L3 11 Q2 11 2 10 Z" fill="#CFFAFE" stroke="#0891B2" strokeWidth="1.2"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">쉽게 말하면</p>
+                    </div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{result.easy}</p>
                   </div>
                 )}
               </div>
@@ -373,23 +460,20 @@ export default function Simulation() {
         </div>
 
         {/* Tip bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">시뮬레이션 팁</p>
-              <p className="text-xs text-gray-500">단 '지금으로서' 기준으로 수입·지출·자산 정보를 최신으로 입력하면 더 정확한 예측을 받을 수 있습니다.</p>
-            </div>
-          </div>
-          <button className="flex items-center gap-1 text-xs text-cyan-600 font-medium hover:underline flex-shrink-0 ml-4">
-            더 알아보기
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#CFFAFE" stroke="#0891B2" strokeWidth="1.3"/>
+              <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#0891B2"/>
+              <path d="M7 17 L13 17" stroke="#0891B2" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
-          </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-800">시뮬레이션 팁</p>
+            <p className="text-xs text-gray-500">단 '지금으로서' 기준으로 수입·지출·자산 정보를 최신으로 입력하면 더 정확한 예측을 받을 수 있습니다.</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

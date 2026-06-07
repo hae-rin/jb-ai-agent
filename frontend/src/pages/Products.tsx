@@ -65,6 +65,7 @@ export default function Products() {
           monthly_save: monthlySave, goals, risk_level: riskLevel,
           has_pension: hasPension, has_irp: hasIrp,
           tax_concern: taxConcern, has_loan: '없음',
+          user_type: profile.user_type,
         }),
       })
       if (!r.ok) throw new Error(await r.text())
@@ -77,9 +78,41 @@ export default function Products() {
   }
 
   const TABS = [
-    { label: '📈 단기 (1~3년)',      key: 'short' as const },
-    { label: '💰 중기 (3~10년)',     key: 'long_term' as const },
-    { label: '🏠 노후 (10년 이상)', key: 'retire' as const },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
+            <polyline points="2,10 5,7 8,8.5 12,4 13,3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            <polyline points="11,3 13,3 13,5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          </svg>
+          단기 (1~3년)
+        </span>
+      ),
+      key: 'short' as const,
+    },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
+            <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.3"/>
+            <text x="7" y="10" textAnchor="middle" fontSize="6" fill="currentColor" fontWeight="bold">₩</text>
+          </svg>
+          중기 (3~10년)
+        </span>
+      ),
+      key: 'long_term' as const,
+    },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
+            <path d="M1 7 L7 2 L13 7 L13 13 H9 V10 H5 V13 H1 Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" fill="none"/>
+          </svg>
+          노후 (10년 이상)
+        </span>
+      ),
+      key: 'retire' as const,
+    },
   ]
 
   return (
@@ -96,15 +129,13 @@ export default function Products() {
           </div>
           <div className="relative flex-shrink-0 mr-4">
             <HeroRobot />
-            {/* 다이아몬드 */}
             <div className="absolute -top-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-16 h-14 flex items-center justify-center animate-float-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-9 h-9">
-                <path d="M16 5 L28 13 L16 27 L4 13 Z"
-                  fill="#A7F3D0" stroke="#059669" strokeWidth="1.8" strokeLinejoin="round"/>
-                <path d="M4 13 L10 9 L16 5 L22 9 L28 13" stroke="#059669" strokeWidth="1.5" fill="none" strokeLinejoin="round"/>
+                <circle cx="16" cy="16" r="13" fill="#D1FAE5" stroke="#059669" strokeWidth="1.5"/>
+                <circle cx="16" cy="16" r="8" fill="#A7F3D0" stroke="#059669" strokeWidth="1.5"/>
+                <circle cx="16" cy="16" r="3.5" fill="#059669"/>
               </svg>
             </div>
-            {/* 막대 차트 */}
             <div className="absolute top-[38%] -right-2 w-11 h-11 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg animate-float-3">
               <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6">
                 <rect x="2" y="12" width="3" height="6" rx="1" fill="white" opacity="0.7"/>
@@ -113,7 +144,6 @@ export default function Products() {
                 <line x1="1" y1="18" x2="17" y2="18" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
-            {/* 안전 */}
             <div className="absolute -bottom-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-14 h-12 flex items-center justify-center animate-float-4">
               <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
                 <ellipse cx="16" cy="22" rx="10" ry="4" fill="#A7F3D0" stroke="#059669" strokeWidth="1.5"/>
@@ -128,23 +158,55 @@ export default function Products() {
 
       {/* Main */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-emerald-500 text-lg">💎</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <path d="M8 14 L2 7 L4 3 H12 L14 7 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.1" strokeLinejoin="round"/>
+                <line x1="2" y1="7" x2="14" y2="7" stroke="#059669" strokeWidth="1"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">맞춤 조건 입력</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-emerald-100', icon: '🎯', title: '목표 분석',   desc: '재무 목표 및 투자 성향 기반 맞춤 분석' },
-                { bg: 'bg-teal-100',    icon: '💎', title: '상품 매칭',   desc: 'JB금융그룹 상품 중 최적 포트폴리오 구성' },
-                { bg: 'bg-green-100',   icon: '💡', title: '절세 추천',   desc: 'IRP·연금저축·비과세 상품 절세 전략 제안' },
+                {
+                  bg: 'bg-emerald-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <circle cx="10" cy="10" r="8" stroke="#059669" strokeWidth="1.3" fill="none"/>
+                      <circle cx="10" cy="10" r="5" stroke="#059669" strokeWidth="1.3" fill="none"/>
+                      <circle cx="10" cy="10" r="2" fill="#059669"/>
+                    </svg>
+                  ),
+                  title: '목표 분석', desc: '재무 목표 및 투자 성향 기반 맞춤 분석',
+                },
+                {
+                  bg: 'bg-teal-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 17 L3 9 L5 4 H15 L17 9 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2" strokeLinejoin="round"/>
+                      <line x1="3" y1="9" x2="17" y2="9" stroke="#059669" strokeWidth="1"/>
+                    </svg>
+                  ),
+                  title: '상품 매칭', desc: 'JB금융그룹 상품 중 최적 포트폴리오 구성',
+                },
+                {
+                  bg: 'bg-green-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.3"/>
+                      <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#059669"/>
+                      <path d="M7 17 L13 17" stroke="#059669" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                  ),
+                  title: '절세 추천', desc: 'IRP·연금저축·비과세 상품 절세 전략 제안',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>{f.icon}</div>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>{f.icon}</div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{f.title}</p>
                     <p className="text-xs text-gray-400">{f.desc}</p>
@@ -154,13 +216,19 @@ export default function Products() {
             </div>
 
             <div className="space-y-4">
-              {/* 재무 목표 */}
               <div>
-                <p className="label">🎯 재무 목표 (복수 선택 가능)</p>
+                <p className="label flex items-center gap-1.5">
+                  <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                    <circle cx="8" cy="8" r="6.5" stroke="#059669" strokeWidth="1.2" fill="none"/>
+                    <circle cx="8" cy="8" r="4" stroke="#059669" strokeWidth="1.2" fill="none"/>
+                    <circle cx="8" cy="8" r="1.5" fill="#059669"/>
+                  </svg>
+                  재무 목표 (복수 선택 가능)
+                </p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {GOALS.map(g => (
                     <button key={g} onClick={() => toggleGoal(g)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                      className={`px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
                         goals.includes(g)
                           ? 'bg-emerald-600 text-white border-emerald-600'
                           : 'bg-white text-gray-600 border-gray-200 hover:border-emerald-300'
@@ -171,13 +239,12 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* 투자 성향 */}
               <div>
                 <label className="label">투자 성향</label>
                 <div className="flex gap-1">
                   {RISK_LEVELS.map(r => (
                     <button key={r} onClick={() => setRiskLevel(r)}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                      className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-all ${
                         riskLevel === r ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                       }`}>
                       {r}
@@ -218,7 +285,14 @@ export default function Products() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>✨ AI 맞춤 상품 추천 받기</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <path d="M10 3 L11 8 L16 10 L11 12 L10 17 L9 12 L4 10 L9 8 Z" fill="white" opacity="0.9"/>
+                  <circle cx="4" cy="4" r="1.2" fill="white" opacity="0.7"/>
+                  <circle cx="16" cy="16" r="1" fill="white" opacity="0.5"/>
+                </svg>
+                AI 맞춤 상품 추천 받기
+              </span>
               <span className="text-xs font-normal text-emerald-200">나에게 맞는 금융 상품을 찾아드립니다</span>
             </button>
           </div>
@@ -226,7 +300,10 @@ export default function Products() {
           {/* RIGHT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">💎</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <path d="M8 14 L2 7 L4 3 H12 L14 7 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.1" strokeLinejoin="round"/>
+                <line x1="2" y1="7" x2="14" y2="7" stroke="#059669" strokeWidth="1"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">AI 상품 추천</h2>
             </div>
 
@@ -244,10 +321,10 @@ export default function Products() {
               <div className="flex flex-col items-center justify-center py-10 text-center">
                 <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
                   <svg viewBox="0 0 40 40" fill="none" className="w-10 h-10">
-                    <path d="M20 8 L28 16 L20 36 L12 16 Z" fill="#A7F3D0" stroke="#6EE7B7" strokeWidth="1.5" strokeLinejoin="round"/>
-                    <path d="M12 16 L20 8 L28 16" fill="#6EE7B7" opacity="0.7"/>
-                    <circle cx="28" cy="10" r="4" fill="#34D399" opacity="0.6"/>
-                    <circle cx="32" cy="20" r="3" fill="#34D399" opacity="0.4"/>
+                    <rect x="5" y="26" width="7" height="10" rx="2" fill="#A7F3D0" stroke="#34D399" strokeWidth="1.2"/>
+                    <rect x="16" y="18" width="7" height="18" rx="2" fill="#6EE7B7" stroke="#34D399" strokeWidth="1.2"/>
+                    <rect x="27" y="10" width="7" height="26" rx="2" fill="#34D399" stroke="#059669" strokeWidth="1.2"/>
+                    <line x1="3" y1="36" x2="37" y2="36" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
                   </svg>
                 </div>
                 <p className="font-semibold text-gray-600 text-sm mb-1">추천 결과가 없습니다</p>
@@ -256,53 +333,94 @@ export default function Products() {
             )}
 
             {result && (
-              <div className="space-y-4 overflow-y-auto max-h-[600px] pr-1">
+              <div className="space-y-4">
                 <div className="border border-emerald-100 bg-emerald-50 rounded-xl p-4">
-                  <p className="text-xs font-bold text-emerald-700 mb-1">💎 종합 분석</p>
-                  <p className="text-xs text-emerald-900 leading-relaxed">{result.overall}</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M8 14 L2 7 L4 3 H12 L14 7 Z" fill="#A7F3D0" stroke="#059669" strokeWidth="1.1" strokeLinejoin="round"/>
+                      <line x1="2" y1="7" x2="14" y2="7" stroke="#059669" strokeWidth="1"/>
+                    </svg>
+                    <p className="text-sm font-bold text-emerald-700">종합 분석</p>
+                  </div>
+                  <p className="text-base text-emerald-900 leading-relaxed">{result.overall}</p>
                 </div>
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-3">🎯 목표별 추천 상품</p>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <circle cx="8" cy="8" r="6.5" stroke="#059669" strokeWidth="1.2" fill="none"/>
+                      <circle cx="8" cy="8" r="4" stroke="#059669" strokeWidth="1.2" fill="none"/>
+                      <circle cx="8" cy="8" r="1.5" fill="#059669"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">목표별 추천 상품</p>
+                  </div>
                   <div className="flex gap-1 mb-3">
                     {TABS.map((t, i) => (
                       <button key={t.key} onClick={() => setTab(i)}
-                        className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${tab === i ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
+                        className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${tab === i ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
                         {t.label}
                       </button>
                     ))}
                   </div>
-                  <div className="alert-success whitespace-pre-wrap text-sm min-h-[60px]">
+                  <div className="alert-success whitespace-pre-wrap text-base min-h-[60px]">
                     {result[TABS[tab].key] || '해당 없음'}
                   </div>
                 </div>
 
                 {result.tax && result.tax !== '해당 없음' && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">💡 절세 상품 추천</p>
-                    <div className="alert-warning whitespace-pre-wrap text-sm">{result.tax}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M8 1.5 Q11.5 1.5 11.5 4.5 Q11.5 6.5 9.5 7.5 L9.5 10 L6.5 10 L6.5 7.5 Q4.5 6.5 4.5 4.5 Q4.5 1.5 8 1.5 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.1"/>
+                        <rect x="7" y="11" width="2" height="1.5" rx="0.5" fill="#059669"/>
+                        <path d="M5.5 14 L10.5 14" stroke="#059669" strokeWidth="1" strokeLinecap="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">절세 상품 추천</p>
+                    </div>
+                    <div className="alert-warning whitespace-pre-wrap text-base">{result.tax}</div>
                   </div>
                 )}
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-2">💬 쉽게 말하면</p>
-                  <p className="text-xs text-gray-600 leading-relaxed">{result.easy}</p>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M2 3 Q2 2 3 2 L13 2 Q14 2 14 3 L14 10 Q14 11 13 11 L6 11 L3 14 L3 11 Q2 11 2 10 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">쉽게 말하면</p>
+                  </div>
+                  <p className="text-base text-gray-600 leading-relaxed">{result.easy}</p>
                 </div>
 
                 {result.actions && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">✅ 지금 해야 할 행동</p>
-                    <div className="alert-success whitespace-pre-wrap text-sm">{result.actions}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="8" cy="8" r="6" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                        <path d="M5 8 L7 10 L11 6" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">지금 해야 할 행동</p>
+                    </div>
+                    <div className="alert-success whitespace-pre-wrap text-base">{result.actions}</div>
                   </div>
                 )}
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-3">📞 JB금융그룹 상담 연결</p>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M5 2 Q3.5 2 3 4 Q2 6 4 8.5 Q5.5 10.5 7.5 12.5 Q9.5 14.5 11.5 14 Q13 13.5 13 12 L11.5 10.5 Q11 10 10 10.5 L9.5 11 Q9 11.5 8.5 11 Q7 9.5 6.5 8 Q6 7.5 6.5 7 L7 6.5 Q7.5 6 7 5 Z" fill="#059669" opacity="0.8"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">JB금융그룹 상담 연결</p>
+                  </div>
                   <div className="grid grid-cols-2 gap-2">
-                      {[['전북은행', '1588-4477'], ['광주은행', '1588-3388'], ['JB우리캐피탈', '1600-2266'], ['JB자산운용', '홈페이지']].map(([label, tel]) => (
-                      <div key={label} className="alert-success text-center text-xs rounded-xl p-2.5">
+                    {[['전북은행', '1588-4477'], ['광주은행', '1588-3388'], ['JB우리캐피탈', '1600-2266'], ['JB자산운용', '홈페이지']].map(([label, tel]) => (
+                      <div key={label} className="alert-success text-center text-sm rounded-xl p-3">
                         <p className="font-bold">{label}</p>
-                        <p className="text-xs mt-0.5">📞 {tel}</p>
+                        <div className="flex items-center justify-center gap-1 mt-0.5">
+                          <svg viewBox="0 0 14 14" fill="none" className="w-3 h-3">
+                            <path d="M4 1.5 Q3 1.5 2.5 3 Q2 4.5 3.5 6.5 Q4.5 8 6.5 10 Q8.5 12 10 11.5 Q11.5 11 11.5 9.5 L10 8.5 Q9.5 8 8.5 8.5 L8 9 Q7.5 9.5 7 9 Q6 8 5.5 7 Q5 6.5 5.5 6 L6 5.5 Q6.5 5 6 4 Z" fill="#059669" opacity="0.8"/>
+                          </svg>
+                          <p className="text-sm">{tel}</p>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -313,23 +431,20 @@ export default function Products() {
         </div>
 
         {/* Tip bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">상품 추천 팁</p>
-              <p className="text-xs text-gray-500">투자 성향을 정확하게 선택할수록 나에게 맞는 상품을 추천받을 수 있습니다. IRP·연금저축은 절세 효과가 큽니다.</p>
-            </div>
-          </div>
-          <button className="flex items-center gap-1 text-xs text-emerald-600 font-medium hover:underline flex-shrink-0 ml-4">
-            더 알아보기
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#D1FAE5" stroke="#059669" strokeWidth="1.3"/>
+              <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#059669"/>
+              <path d="M7 17 L13 17" stroke="#059669" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
-          </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-800">상품 추천 팁</p>
+            <p className="text-xs text-gray-500">투자 성향을 정확하게 선택할수록 나에게 맞는 상품을 추천받을 수 있습니다. IRP·연금저축은 절세 효과가 큽니다.</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

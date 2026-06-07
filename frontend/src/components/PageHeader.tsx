@@ -16,7 +16,10 @@ export default function PageHeader({ icon, title, subtitle, gradient }: Props) {
           onClick={() => nav('/')}
           className="text-white/70 hover:text-white text-sm mb-4 flex items-center gap-1.5 transition-colors"
         >
-          ← 홈으로
+          <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          홈으로
         </button>
         <div className="flex items-center gap-4">
           <span className="text-4xl">{icon}</span>

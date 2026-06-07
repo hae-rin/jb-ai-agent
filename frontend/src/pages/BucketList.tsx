@@ -87,7 +87,7 @@ export default function BucketList() {
         body: JSON.stringify({
           age: profile.age, income: profile.income,
           asset: profile.asset, expense: profile.expense,
-          items: active,
+          items: active, user_type: profile.user_type,
         }),
       })
       if (!r.ok) throw new Error(await r.text())
@@ -98,8 +98,6 @@ export default function BucketList() {
       setLoading(false)
     }
   }
-
-  const monthlySavings = profile.income - profile.expense
 
   return (
     <div className="min-h-screen">
@@ -115,14 +113,12 @@ export default function BucketList() {
           </div>
           <div className="relative flex-shrink-0 mr-4">
             <HeroRobot />
-            {/* 별 / 꽃 */}
             <div className="absolute -top-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-16 h-14 flex items-center justify-center animate-float-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-9 h-9">
                 <path d="M16 4 L19 12 L28 12 L21 18 L24 26 L16 21 L8 26 L11 18 L4 12 L13 12 Z"
                   fill="#FCD34D" stroke="#F59E0B" strokeWidth="1.5" strokeLinejoin="round"/>
               </svg>
             </div>
-            {/* 돼지 저금통 */}
             <div className="absolute top-[38%] -right-2 w-11 h-11 bg-amber-400 rounded-xl flex items-center justify-center shadow-lg animate-float-3">
               <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6">
                 <ellipse cx="10" cy="11" rx="7" ry="6" fill="white" opacity="0.9"/>
@@ -133,7 +129,6 @@ export default function BucketList() {
                 <line x1="12" y1="17" x2="12" y2="19" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </div>
-            {/* 체크리스트 */}
             <div className="absolute -bottom-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-14 h-12 flex items-center justify-center animate-float-4">
               <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
                 <rect x="4" y="4" width="24" height="24" rx="5" stroke="#F59E0B" strokeWidth="2"/>
@@ -146,23 +141,59 @@ export default function BucketList() {
 
       {/* Main */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-amber-500 text-lg">⭐</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <path d="M8 2L9.7 6.3H14.3L10.7 8.9L12 13.2L8 10.6L4 13.2L5.3 8.9L1.7 6.3H6.3Z"
+                  fill="#FCD34D" stroke="#F59E0B" strokeWidth="0.8" strokeLinejoin="round"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">꿈 목록 입력</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-amber-100',   icon: '🎯', title: '꿈 실현 가능성', desc: '재무 상황 기반으로 각 꿈의 달성 가능성 분석' },
-                { bg: 'bg-orange-100',  icon: '📅', title: '단계별 재무 계획', desc: '꿈을 이루기 위한 월별·연도별 저축 계획 수립' },
-                { bg: 'bg-yellow-100',  icon: '💌', title: '응원 메시지',      desc: 'AI가 보내는 따뜻한 격려와 실천 조언' },
+                {
+                  bg: 'bg-amber-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <circle cx="10" cy="10" r="8" stroke="#D97706" strokeWidth="1.3" fill="none"/>
+                      <circle cx="10" cy="10" r="5" stroke="#D97706" strokeWidth="1.3" fill="none"/>
+                      <circle cx="10" cy="10" r="2" fill="#D97706"/>
+                    </svg>
+                  ),
+                  title: '꿈 실현 가능성', desc: '재무 상황 기반으로 각 꿈의 달성 가능성 분석',
+                },
+                {
+                  bg: 'bg-orange-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <rect x="2" y="4" width="16" height="13" rx="2" stroke="#D97706" strokeWidth="1.3"/>
+                      <line x1="2" y1="9" x2="18" y2="9" stroke="#D97706" strokeWidth="1.3"/>
+                      <line x1="6" y1="2" x2="6" y2="6" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round"/>
+                      <line x1="14" y1="2" x2="14" y2="6" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round"/>
+                      <circle cx="6" cy="12.5" r="1" fill="#D97706"/>
+                      <circle cx="10" cy="12.5" r="1" fill="#D97706"/>
+                      <circle cx="14" cy="12.5" r="1" fill="#D97706"/>
+                    </svg>
+                  ),
+                  title: '단계별 재무 계획', desc: '꿈을 이루기 위한 월별·연도별 저축 계획 수립',
+                },
+                {
+                  bg: 'bg-yellow-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <rect x="2" y="5" width="16" height="11" rx="2" stroke="#D97706" strokeWidth="1.3"/>
+                      <path d="M2 8 L10 12.5 L18 8" stroke="#D97706" strokeWidth="1.3" fill="none"/>
+                    </svg>
+                  ),
+                  title: '응원 메시지', desc: 'AI가 보내는 따뜻한 격려와 실천 조언',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>{f.icon}</div>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>{f.icon}</div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{f.title}</p>
                     <p className="text-xs text-gray-400">{f.desc}</p>
@@ -171,30 +202,29 @@ export default function BucketList() {
               ))}
             </div>
 
-            {/* 월 가용 저축액 배분 */}
-            <div className={`rounded-xl p-3 text-xs font-medium mb-4 ${
-              monthlySavings > 0 ? 'alert-success' : monthlySavings < 0 ? 'alert-danger' : 'alert-info'
-            }`}>
-              {monthlySavings > 0
-                ? `✅ 매달 약 ${monthlySavings}만원씩 저축할 수 있습니다.`
-                : monthlySavings < 0
-                ? `⚠️ 매달 약 ${Math.abs(monthlySavings)}만원이 부족합니다.`
-                : '수입과 지출이 딱 맞습니다.'}
-            </div>
-
-            {/* 예시 버튼 */}
             <div className="flex gap-2 mb-4">
               <button onClick={() => setItems(TRAVEL_EXAMPLE)}
-                className="flex-1 text-xs py-2 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors">
-                🌏 여행 중심 예시
+                className="flex-1 text-sm py-2 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors flex items-center justify-center gap-1.5">
+                <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                  <circle cx="8" cy="8" r="6" stroke="#D97706" strokeWidth="1.2"/>
+                  <path d="M8 2 Q10 5 10 8 Q10 11 8 14 Q6 11 6 8 Q6 5 8 2Z" stroke="#D97706" strokeWidth="1" fill="none"/>
+                  <line x1="2.5" y1="6" x2="13.5" y2="6" stroke="#D97706" strokeWidth="1" opacity="0.6"/>
+                  <line x1="2.5" y1="10" x2="13.5" y2="10" stroke="#D97706" strokeWidth="1" opacity="0.6"/>
+                </svg>
+                여행 중심 예시
               </button>
               <button onClick={() => setItems(FAMILY_EXAMPLE)}
-                className="flex-1 text-xs py-2 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors">
-                👨‍👩‍👧‍👦 가족 중심 예시
+                className="flex-1 text-sm py-2 rounded-xl border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition-colors flex items-center justify-center gap-1.5">
+                <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                  <circle cx="5" cy="5" r="2" stroke="#D97706" strokeWidth="1.1"/>
+                  <path d="M2 13 C2 11 3.5 10 5 10 C6.5 10 8 11 8 13" stroke="#D97706" strokeWidth="1.1" fill="none" strokeLinecap="round"/>
+                  <circle cx="11" cy="5" r="1.5" stroke="#D97706" strokeWidth="1.1"/>
+                  <path d="M9 13 C9 11.3 9.8 10.5 11 10.5 C12.2 10.5 13 11.3 13 13" stroke="#D97706" strokeWidth="1.1" fill="none" strokeLinecap="round"/>
+                </svg>
+                가족 중심 예시
               </button>
             </div>
 
-            {/* 입력 테이블 */}
             <div className="grid grid-cols-[2fr_1fr_1fr] gap-2 mb-2">
               <p className="text-xs text-gray-400 font-medium">꿈 내용</p>
               <p className="text-xs text-gray-400 font-medium">비용(만원)</p>
@@ -216,7 +246,14 @@ export default function BucketList() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>✨ AI 재무 계획 만들기</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <path d="M10 3 L11 8 L16 10 L11 12 L10 17 L9 12 L4 10 L9 8 Z" fill="white" opacity="0.9"/>
+                  <circle cx="4" cy="4" r="1.2" fill="white" opacity="0.7"/>
+                  <circle cx="16" cy="16" r="1" fill="white" opacity="0.5"/>
+                </svg>
+                AI 재무 계획 만들기
+              </span>
               <span className="text-xs font-normal text-amber-100">꿈을 현실로 만드는 계획을 세워드립니다</span>
             </button>
           </div>
@@ -224,7 +261,11 @@ export default function BucketList() {
           {/* RIGHT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">📊</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#D97706"/>
+                <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#D97706"/>
+                <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#D97706"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">AI 재무 계획</h2>
             </div>
 
@@ -252,15 +293,27 @@ export default function BucketList() {
             )}
 
             {result && (
-              <div className="space-y-4 overflow-y-auto max-h-[600px] pr-1">
+              <div className="space-y-4">
                 <div className="border border-amber-100 bg-amber-50 rounded-xl p-3">
-                  <p className="text-xs font-bold text-amber-700 mb-1">💛 종합 분석</p>
-                  <p className="text-xs text-amber-900 leading-relaxed">{result.overall}</p>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M8 2L9.7 6.3H14.3L10.7 8.9L12 13.2L8 10.6L4 13.2L5.3 8.9L1.7 6.3H6.3Z"
+                        fill="#FCD34D" stroke="#D97706" strokeWidth="0.8" strokeLinejoin="round"/>
+                    </svg>
+                    <p className="text-sm font-bold text-amber-700">종합 분석</p>
+                  </div>
+                  <p className="text-sm text-amber-900 leading-relaxed">{result.overall}</p>
                 </div>
 
                 {result.item_results.length > 0 && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-3">🌟 꿈 실현 타임라인</p>
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M8 2L9.7 6.3H14.3L10.7 8.9L12 13.2L8 10.6L4 13.2L5.3 8.9L1.7 6.3H6.3Z"
+                          fill="#FCD34D" stroke="#F59E0B" strokeWidth="0.8" strokeLinejoin="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">꿈 실현 타임라인</p>
+                    </div>
                     <ResponsiveContainer width="100%" height={Math.max(120, result.item_results.length * 42 + 40)}>
                       <BarChart data={result.item_results} layout="vertical"
                         margin={{ top: 0, right: 80, bottom: 0, left: 8 }}>
@@ -292,10 +345,10 @@ export default function BucketList() {
                     {result.item_results.map((item, i) => (
                       <div key={i} className="flex items-center justify-between border border-gray-100 rounded-xl px-3 py-2.5">
                         <div>
-                          <p className="text-xs font-semibold text-gray-800">{item.name}</p>
-                          <p className="text-xs text-gray-400">{item.cost}만원 · {item.years}년 목표</p>
+                          <p className="text-sm font-semibold text-gray-800">{item.name}</p>
+                          <p className="text-sm text-gray-400">{item.cost}만원 · {item.years}년 목표</p>
                         </div>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BG[item.status]}`}>
+                        <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${STATUS_BG[item.status]}`}>
                           {item.status}
                         </span>
                       </div>
@@ -305,29 +358,55 @@ export default function BucketList() {
 
                 {result.analysis && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">🔍 꿈별 상세 분석</p>
-                    <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{result.analysis}</p>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="7" cy="7" r="4.5" stroke="#D97706" strokeWidth="1.3"/>
+                        <line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">꿈별 상세 분석</p>
+                    </div>
+                    <p className="text-base text-gray-600 leading-relaxed whitespace-pre-wrap">{result.analysis}</p>
                   </div>
                 )}
 
                 {result.priority && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">📅 추천 순서</p>
-                    <div className="alert-success whitespace-pre-wrap text-sm">{result.priority}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
+                        <rect x="2" y="4" width="16" height="13" rx="2" stroke="#D97706" strokeWidth="1.3"/>
+                        <line x1="2" y1="9" x2="18" y2="9" stroke="#D97706" strokeWidth="1.3"/>
+                        <line x1="6" y1="2" x2="6" y2="6" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="14" y1="2" x2="14" y2="6" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">추천 순서</p>
+                    </div>
+                    <div className="alert-success whitespace-pre-wrap text-base">{result.priority}</div>
                   </div>
                 )}
 
                 {result.plan && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">💰 월별 계획</p>
-                    <div className="alert-success whitespace-pre-wrap text-sm">{result.plan}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="8" cy="8" r="6" stroke="#D97706" strokeWidth="1.2"/>
+                        <text x="8" y="11" textAnchor="middle" fontSize="7" fill="#D97706" fontWeight="bold">₩</text>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">월별 계획</p>
+                    </div>
+                    <div className="alert-success whitespace-pre-wrap text-base">{result.plan}</div>
                   </div>
                 )}
 
                 {result.cheer && (
                   <div className="border border-amber-100 bg-amber-50 rounded-xl p-4">
-                    <p className="text-xs font-bold text-amber-700 mb-2">💌 응원 메시지</p>
-                    <p className="text-sm text-amber-900 leading-relaxed whitespace-pre-wrap">{result.cheer}</p>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4">
+                        <rect x="2" y="5" width="16" height="11" rx="2" stroke="#D97706" strokeWidth="1.3"/>
+                        <path d="M2 8 L10 12.5 L18 8" stroke="#D97706" strokeWidth="1.3" fill="none"/>
+                      </svg>
+                      <p className="text-sm font-bold text-amber-700">응원 메시지</p>
+                    </div>
+                    <p className="text-base text-amber-900 leading-relaxed whitespace-pre-wrap">{result.cheer}</p>
                   </div>
                 )}
               </div>
@@ -336,23 +415,20 @@ export default function BucketList() {
         </div>
 
         {/* Tip bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">버킷리스트 팁</p>
-              <p className="text-xs text-gray-500">비용과 목표 시기를 구체적으로 입력할수록 더 현실적인 재무 계획을 받을 수 있습니다.</p>
-            </div>
-          </div>
-          <button className="flex items-center gap-1 text-xs text-amber-600 font-medium hover:underline flex-shrink-0 ml-4">
-            더 알아보기
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#FEF3C7" stroke="#D97706" strokeWidth="1.3"/>
+              <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#D97706"/>
+              <path d="M7 17 L13 17" stroke="#D97706" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
-          </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-800">버킷리스트 팁</p>
+            <p className="text-xs text-gray-500">비용과 목표 시기를 구체적으로 입력할수록 더 현실적인 재무 계획을 받을 수 있습니다.</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

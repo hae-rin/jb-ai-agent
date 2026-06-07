@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useProfile } from '../context/ProfileContext'
 
 const DOC_TYPES = ['보험 약관', '대출 문서', '금융 안내서', '예금/적금 상품', 'ELS/펀드 상품', '기타 금융 문서']
 
@@ -40,6 +41,7 @@ function HeroRobot() {
 }
 
 export default function DocReader() {
+  const { profile } = useProfile()
   const [mode, setMode] = useState<'text' | 'file'>('text')
   const [docType, setDocType] = useState('보험 약관')
   const [text, setText] = useState('')
@@ -54,6 +56,7 @@ export default function DocReader() {
     try {
       const fd = new FormData()
       fd.append('doc_type', docType)
+      fd.append('user_type', profile.user_type)
       if (mode === 'file' && file) fd.append('file', file)
       else fd.append('text', text)
       const r = await fetch('/api/doc-reader', { method: 'POST', body: fd })
@@ -80,7 +83,6 @@ export default function DocReader() {
           </div>
           <div className="relative flex-shrink-0 mr-4">
             <HeroRobot />
-            {/* 문서 */}
             <div className="absolute -top-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-16 h-14 flex items-center justify-center animate-float-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-9 h-9">
                 <rect x="6" y="3" width="20" height="26" rx="3" stroke="#7C3AED" strokeWidth="2"/>
@@ -89,14 +91,12 @@ export default function DocReader() {
                 <line x1="10" y1="20" x2="17" y2="20" stroke="#7C3AED" strokeWidth="1.8" strokeLinecap="round"/>
               </svg>
             </div>
-            {/* 보호막 */}
             <div className="absolute top-[38%] -right-2 w-11 h-11 bg-violet-500 rounded-xl flex items-center justify-center shadow-lg animate-float-3">
               <svg viewBox="0 0 20 20" fill="none" className="w-6 h-6">
                 <circle cx="8.5" cy="8.5" r="5.5" stroke="white" strokeWidth="2"/>
                 <line x1="13" y1="13" x2="18" y2="18" stroke="white" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            {/* 번개/즉시 */}
             <div className="absolute -bottom-2 -right-2 bg-white rounded-2xl shadow-lg p-3 w-14 h-12 flex items-center justify-center animate-float-4">
               <svg viewBox="0 0 32 32" fill="none" className="w-8 h-8">
                 <path d="M18 4 L10 18 L16 18 L14 28 L22 14 L16 14 Z"
@@ -109,23 +109,58 @@ export default function DocReader() {
 
       {/* Main */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-violet-500 text-lg">📄</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="3" y="2" width="10" height="13" rx="1.5" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.1"/>
+                <line x1="5" y1="6" x2="11" y2="6" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+                <line x1="5" y1="9" x2="11" y2="9" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+                <line x1="5" y1="12" x2="8" y2="12" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">문서 입력</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-violet-100',  icon: '📋', title: '핵심 요약',       desc: '긴 문서의 핵심 내용을 3문장으로 요약' },
-                { bg: 'bg-purple-100',  icon: '💬', title: '쉬운 설명',        desc: '어려운 금융 용어를 일상 언어로 풀어 설명' },
-                { bg: 'bg-indigo-100',  icon: '⚠️', title: '주의사항 추출',    desc: '놓치기 쉬운 중요 조건·위험 요소 강조' },
+                {
+                  bg: 'bg-violet-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <rect x="3" y="3" width="14" height="14" rx="2" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.2"/>
+                      <rect x="7" y="2" width="6" height="3" rx="1" fill="#DDD6FE" stroke="#7C3AED" strokeWidth="1"/>
+                      <line x1="6" y1="9" x2="14" y2="9" stroke="#7C3AED" strokeWidth="1.1" strokeLinecap="round"/>
+                      <line x1="6" y1="12" x2="14" y2="12" stroke="#7C3AED" strokeWidth="1.1" strokeLinecap="round"/>
+                      <line x1="6" y1="15" x2="10" y2="15" stroke="#7C3AED" strokeWidth="1.1" strokeLinecap="round"/>
+                    </svg>
+                  ),
+                  title: '핵심 요약', desc: '긴 문서의 핵심 내용을 3문장으로 요약',
+                },
+                {
+                  bg: 'bg-purple-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M3 4 Q3 3 4 3 L16 3 Q17 3 17 4 L17 13 Q17 14 16 14 L8 14 L4 17 L4 14 Q3 14 3 13 Z" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.2"/>
+                    </svg>
+                  ),
+                  title: '쉬운 설명', desc: '어려운 금융 용어를 일상 언어로 풀어 설명',
+                },
+                {
+                  bg: 'bg-indigo-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 L18 15 H2 Z" fill="#E0E7FF" stroke="#4F46E5" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <rect x="9.2" y="7" width="1.6" height="5" rx="0.8" fill="#4F46E5"/>
+                      <circle cx="10" cy="13.5" r="0.9" fill="#4F46E5"/>
+                    </svg>
+                  ),
+                  title: '주의사항 추출', desc: '놓치기 쉬운 중요 조건·위험 요소 강조',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>{f.icon}</div>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>{f.icon}</div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">{f.title}</p>
                     <p className="text-xs text-gray-400">{f.desc}</p>
@@ -134,14 +169,33 @@ export default function DocReader() {
               ))}
             </div>
 
-            {/* 체크리스트 */}
             <div className="flex gap-2 mb-4">
               {(['text', 'file'] as const).map(m => (
                 <button key={m} onClick={() => setMode(m)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-1.5 ${
                     mode === m ? 'bg-violet-600 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}>
-                  {m === 'text' ? '⌨️ 텍스트 입력' : '📎 파일 첨부'}
+                  {m === 'text'
+                    ? (
+                      <>
+                        <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                          <rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+                          <line x1="3" y1="7" x2="4" y2="7" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+                          <line x1="6" y1="7" x2="7" y2="7" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+                          <line x1="9" y1="7" x2="10" y2="7" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+                          <line x1="4" y1="10" x2="12" y2="10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+                        </svg>
+                        텍스트 입력
+                      </>
+                    )
+                    : (
+                      <>
+                        <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
+                          <path d="M11 5.5 L7 9.5 Q5.5 11 4.5 10 Q3.5 9 5 7.5 L9 3.5 Q10.5 2 12 3.5 Q13.5 5 12 6.5 L7.5 11 Q5.5 13 4 11.5" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        파일 첨부
+                      </>
+                    )}
                 </button>
               ))}
             </div>
@@ -155,12 +209,18 @@ export default function DocReader() {
 
             {mode === 'text' ? (
               <>
-                <p className="text-xs text-gray-500 mb-2 font-medium">예시 불러오기</p>
+                <p className="text-sm text-gray-500 mb-2 font-medium">예시 불러오기</p>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {Object.keys(EXAMPLES).map(k => (
                     <button key={k} onClick={() => { setText(EXAMPLES[k]); setDocType(k) }}
-                      className="text-xs px-2.5 py-1 rounded-lg border border-violet-200 text-violet-700 hover:bg-violet-50 transition-colors">
-                      📄 {k}
+                      className="text-sm px-3 py-1.5 rounded-lg border border-violet-200 text-violet-700 hover:bg-violet-50 transition-colors flex items-center gap-1.5">
+                      <svg viewBox="0 0 14 14" fill="none" className="w-3 h-3">
+                        <rect x="2" y="1" width="10" height="12" rx="1.5" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1"/>
+                        <line x1="4" y1="5" x2="10" y2="5" stroke="#7C3AED" strokeWidth="0.9" strokeLinecap="round"/>
+                        <line x1="4" y1="7.5" x2="10" y2="7.5" stroke="#7C3AED" strokeWidth="0.9" strokeLinecap="round"/>
+                        <line x1="4" y1="10" x2="7" y2="10" stroke="#7C3AED" strokeWidth="0.9" strokeLinecap="round"/>
+                      </svg>
+                      {k}
                     </button>
                   ))}
                 </div>
@@ -172,11 +232,20 @@ export default function DocReader() {
               <div onClick={() => fileRef.current?.click()}
                 className="border-2 border-dashed border-violet-200 hover:border-violet-400 rounded-xl p-10 text-center cursor-pointer transition-colors bg-violet-50">
                 {file
-                  ? <p className="text-violet-700 font-medium text-sm">📎 {file.name} ({(file.size / 1024).toFixed(1)} KB)</p>
+                  ? (
+                    <p className="text-violet-700 font-medium text-sm flex items-center justify-center gap-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M11 5.5 L7 9.5 Q5.5 11 4.5 10 Q3.5 9 5 7.5 L9 3.5 Q10.5 2 12 3.5 Q13.5 5 12 6.5 L7.5 11 Q5.5 13 4 11.5" stroke="#7C3AED" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                    </p>
+                  )
                   : (
                     <>
                       <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">📁</span>
+                        <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7">
+                          <path d="M2 7 Q2 5 3.5 5 L9 5 L11 8 L20 8 Q22 8 22 10 L22 20 Q22 22 20 22 L4 22 Q2 22 2 20 Z" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.5" strokeLinejoin="round"/>
+                        </svg>
                       </div>
                       <p className="text-violet-600 font-medium text-sm">클릭하여 파일 업로드</p>
                       <p className="text-violet-400 text-xs mt-1">PDF, JPG, PNG 지원</p>
@@ -193,7 +262,13 @@ export default function DocReader() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>🔍 AI 쉬운 설명 시작</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <circle cx="9" cy="9" r="6" stroke="white" strokeWidth="1.5"/>
+                  <line x1="13.5" y1="13.5" x2="18" y2="18" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+                AI 쉬운 설명 시작
+              </span>
               <span className="text-xs font-normal text-violet-200">어려운 문서를 쉽게 풀어드립니다</span>
             </button>
           </div>
@@ -201,7 +276,11 @@ export default function DocReader() {
           {/* RIGHT */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">📊</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="1" y="9" width="3" height="6" rx="0.8" fill="#7C3AED"/>
+                <rect x="6" y="6" width="3" height="9" rx="0.8" fill="#7C3AED"/>
+                <rect x="11" y="3" width="3" height="12" rx="0.8" fill="#7C3AED"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">AI 분석 결과</h2>
             </div>
 
@@ -235,26 +314,53 @@ export default function DocReader() {
             {result && (
               <div className="space-y-4">
                 <div className="border border-violet-100 bg-violet-50 rounded-xl p-4">
-                  <p className="text-xs font-bold text-violet-700 mb-2">📋 핵심 요약</p>
-                  <p className="text-sm text-violet-900 leading-relaxed">{result.summary}</p>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <rect x="2" y="2" width="12" height="12" rx="1.5" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.1"/>
+                      <rect x="5.5" y="1" width="5" height="3" rx="0.8" fill="#DDD6FE" stroke="#7C3AED" strokeWidth="0.9"/>
+                      <line x1="4" y1="7.5" x2="12" y2="7.5" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+                      <line x1="4" y1="10" x2="12" y2="10" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+                      <line x1="4" y1="12.5" x2="8" y2="12.5" stroke="#7C3AED" strokeWidth="1" strokeLinecap="round"/>
+                    </svg>
+                    <p className="text-sm font-bold text-violet-700">핵심 요약</p>
+                  </div>
+                  <p className="text-base text-violet-900 leading-relaxed">{result.summary}</p>
                 </div>
 
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-xs font-bold text-gray-500 mb-2">💬 쉽게 말하면</p>
-                  <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{result.easy}</p>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M2 3 Q2 2 3 2 L13 2 Q14 2 14 3 L14 10 Q14 11 13 11 L6 11 L3 14 L3 11 Q2 11 2 10 Z" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.2"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">쉽게 말하면</p>
+                  </div>
+                  <p className="text-base text-gray-600 leading-relaxed whitespace-pre-wrap">{result.easy}</p>
                 </div>
 
                 {result.key && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">✅ 꼭 알아야 할 내용</p>
-                    <div className="alert-success whitespace-pre-wrap text-sm">{result.key}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <circle cx="8" cy="8" r="6" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                        <path d="M5 8 L7 10 L11 6" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">꼭 알아야 할 내용</p>
+                    </div>
+                    <div className="alert-success whitespace-pre-wrap text-base">{result.key}</div>
                   </div>
                 )}
 
                 {result.caution && result.caution !== '식별된 주의사항 없음' && (
                   <div className="border border-gray-100 rounded-xl p-4">
-                    <p className="text-xs font-bold text-gray-500 mb-2">⚠️ 주의사항</p>
-                    <div className="alert-warning whitespace-pre-wrap text-sm">{result.caution}</div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                        <path d="M8 2 L14 13 H2 Z" fill="#FEF3C7" stroke="#D97706" strokeWidth="1.2" strokeLinejoin="round"/>
+                        <rect x="7.3" y="5.5" width="1.4" height="4" rx="0.7" fill="#D97706"/>
+                        <circle cx="8" cy="11" r="0.7" fill="#D97706"/>
+                      </svg>
+                      <p className="text-sm font-bold text-gray-500">주의사항</p>
+                    </div>
+                    <div className="alert-warning whitespace-pre-wrap text-base">{result.caution}</div>
                   </div>
                 )}
               </div>
@@ -263,23 +369,20 @@ export default function DocReader() {
         </div>
 
         {/* Tip bar */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">문서 분석 팁</p>
-              <p className="text-xs text-gray-500">분석 전에 꼭 살펴보세요. 어려운 용어가 많은 보험 약관이나 대출 문서도 AI가 쉽게 풀어드립니다.</p>
-            </div>
-          </div>
-          <button className="flex items-center gap-1 text-xs text-violet-600 font-medium hover:underline flex-shrink-0 ml-4">
-            더 알아보기
-            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-3">
+          <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#EDE9FE" stroke="#7C3AED" strokeWidth="1.3"/>
+              <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#7C3AED"/>
+              <path d="M7 17 L13 17" stroke="#7C3AED" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
-          </button>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-800">문서 분석 팁</p>
+            <p className="text-xs text-gray-500">분석 전에 꼭 살펴보세요. 어려운 용어가 많은 보험 약관이나 대출 문서도 AI가 쉽게 풀어드립니다.</p>
+          </div>
         </div>
       </div>
     </div>
   )
 }
-

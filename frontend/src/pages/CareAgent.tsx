@@ -26,7 +26,6 @@ function RiskBadge({ level }: { level: string }) {
   return <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">{level}</span>
 }
 
-// Robot for hero
 function HeroRobot() {
   return (
     <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-44 h-52 drop-shadow-lg">
@@ -35,7 +34,6 @@ function HeroRobot() {
       <rect x="78" y="197" width="17" height="18" rx="6" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
       <rect x="105" y="197" width="17" height="18" rx="6" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
       <rect x="58" y="122" width="84" height="78" rx="22" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
-      {/* Waving arm (right) */}
       <path d="M142 130 Q162 118 168 108 Q172 100 165 96 Q158 92 153 102 Q148 112 142 120" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
       <rect x="22" y="134" width="36" height="18" rx="9" fill="white" stroke="#E2E8F0" strokeWidth="1.5"/>
       <path d="M86 142 L100 133 L114 142 L114 157 Q100 167 86 157 Z" fill="#2563EB"/>
@@ -104,9 +102,33 @@ export default function CareAgent() {
   const isCaution = result && (result.fin_risk.includes('주의') || result.tx_risk.includes('보통'))
 
   const PLAN_TABS = [
-    { label: '⚡ 즉각 조치',  content: result?.immediate,     cls: 'alert-danger'  },
-    { label: '📅 단기 계획',  content: result?.short_plan,    cls: 'alert-warning' },
-    { label: '🔭 장기 전략',  content: result?.long_strategy, cls: 'alert-info'    },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5"><path d="M8 2 L14 13 H2 Z" fill="#FEE2E2" stroke="#EF4444" strokeWidth="1.2" strokeLinejoin="round"/><rect x="7.2" y="6" width="1.6" height="4" rx="0.8" fill="#EF4444"/><circle cx="8" cy="11.5" r="0.8" fill="#EF4444"/></svg>
+          즉각 조치
+        </span>
+      ),
+      content: result?.immediate, cls: 'alert-danger',
+    },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5"><rect x="2" y="2" width="12" height="13" rx="2" fill="#FEF3C7" stroke="#D97706" strokeWidth="1.2"/><line x1="2" y1="5.5" x2="14" y2="5.5" stroke="#D97706" strokeWidth="1.2"/><line x1="5" y1="1" x2="5" y2="4" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round"/><line x1="11" y1="1" x2="11" y2="4" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round"/><rect x="4" y="8" width="3" height="2" rx="0.5" fill="#D97706"/><rect x="9" y="8" width="3" height="2" rx="0.5" fill="#D97706" opacity="0.5"/></svg>
+          단기 계획
+        </span>
+      ),
+      content: result?.short_plan, cls: 'alert-warning',
+    },
+    {
+      label: (
+        <span className="inline-flex items-center gap-1">
+          <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5"><circle cx="8" cy="8" r="6" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.2"/><circle cx="8" cy="8" r="2.5" fill="#2563EB"/><line x1="8" y1="2" x2="8" y2="4.5" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/><line x1="8" y1="11.5" x2="8" y2="14" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/><line x1="2" y1="8" x2="4.5" y2="8" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/><line x1="11.5" y1="8" x2="14" y2="8" stroke="#2563EB" strokeWidth="1.2" strokeLinecap="round"/></svg>
+          장기 전략
+        </span>
+      ),
+      content: result?.long_strategy, cls: 'alert-info',
+    },
   ]
 
   return (
@@ -149,23 +171,53 @@ export default function CareAgent() {
 
       {/* ── Main content ── */}
       <div className="px-8 py-6">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
+        <div className="flex flex-col gap-5 mb-5">
 
           {/* LEFT: AI 분석 시작하기 */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-blue-500 text-lg">✦</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-blue-500">
+                <path d="M8 2 L9 6.5 L13.5 8 L9 9.5 L8 14 L7 9.5 L2.5 8 L7 6.5 Z" fill="#3B82F6" stroke="#2563EB" strokeWidth="0.5" strokeLinejoin="round"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">AI 분석 시작하기</h2>
             </div>
 
             <div className="space-y-4 mb-6">
               {[
-                { bg: 'bg-blue-100',    icon: '📊', title: '종합 분석',  desc: '재무 상태, 거래 패턴, 위험도 종합 분석' },
-                { bg: 'bg-red-100',     icon: '🛡',  title: '위협 탐지',  desc: '이상 거래 및 금융 사기 위험 실시간 탐지' },
-                { bg: 'bg-emerald-100', icon: '👤',  title: '맞춤 케어',  desc: '개인 맞춤형 금융 안전 관리 플랜 제공' },
+                {
+                  bg: 'bg-blue-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <rect x="2" y="10" width="4" height="8" rx="1" fill="#2563EB"/>
+                      <rect x="8" y="7"  width="4" height="11" rx="1" fill="#2563EB"/>
+                      <rect x="14" y="3" width="4" height="15" rx="1" fill="#2563EB"/>
+                    </svg>
+                  ),
+                  title: '종합 분석', desc: '재무 상태, 거래 패턴, 위험도 종합 분석',
+                },
+                {
+                  bg: 'bg-red-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <path d="M10 2 L16 5 L16 11 Q16 16 10 18 Q4 16 4 11 L4 5 Z" fill="#FECACA" stroke="#EF4444" strokeWidth="1.3" strokeLinejoin="round"/>
+                      <path d="M7 10.5 L9 12.5 L13.5 8" stroke="#EF4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  title: '위협 탐지', desc: '이상 거래 및 금융 사기 위험 실시간 탐지',
+                },
+                {
+                  bg: 'bg-emerald-100',
+                  icon: (
+                    <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                      <circle cx="10" cy="7" r="3.5" fill="#059669"/>
+                      <path d="M3 18c0-4 3.13-6 7-6s7 2 7 6" fill="#6EE7B7" stroke="#059669" strokeWidth="1.3" strokeLinecap="round"/>
+                    </svg>
+                  ),
+                  title: '맞춤 케어', desc: '개인 맞춤형 금융 안전 관리 플랜 제공',
+                },
               ].map(f => (
                 <div key={f.title} className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center text-lg flex-shrink-0`}>
+                  <div className={`w-10 h-10 ${f.bg} rounded-full flex items-center justify-center flex-shrink-0`}>
                     {f.icon}
                   </div>
                   <div>
@@ -179,27 +231,43 @@ export default function CareAgent() {
             {/* 거래 내역 (선택) */}
             <button
               onClick={() => setTxOpen(o => !o)}
-              className="w-full flex items-center justify-between text-sm font-medium text-gray-600
+              className="w-full flex items-center justify-between text-base font-medium text-gray-600
                          border border-dashed border-gray-200 rounded-xl px-4 py-2.5 mb-3
                          hover:bg-gray-50 transition-colors"
             >
-              <span>📂 최근 거래 내역 입력 <span className="text-gray-400 font-normal">(선택)</span></span>
-              <span className="text-gray-400 text-xs">{txOpen ? '▲' : '▼'}</span>
+              <span className="flex items-center gap-1.5">
+                <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                  <path d="M2 4 Q2 2 4 2 L7 2 L8.5 4 L14 4 Q14 4 14 6 L14 13 Q14 14 13 14 L3 14 Q2 14 2 13 Z" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.2" strokeLinejoin="round"/>
+                </svg>
+                최근 거래 내역 입력 <span className="text-gray-400 font-normal">(선택)</span>
+              </span>
+              <svg viewBox="0 0 16 16" fill="none" className={`w-4 h-4 text-gray-400 transition-transform ${txOpen ? 'rotate-180' : ''}`}>
+                <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </button>
 
             {txOpen && (
               <div className="mb-4 space-y-2">
                 <div className="flex gap-2">
                   <button onClick={() => setTransactions(TX_RISK_EXAMPLE)}
-                    className="flex-1 text-xs py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors">
-                    ⚠️ 위험 예시
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 text-sm font-medium py-2 rounded-lg bg-red-100 border border-red-300 text-red-700 hover:bg-red-200 transition-colors">
+                    <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
+                      <path d="M7 1.5 L12.5 11.5 H1.5 Z" fill="#FEE2E2" stroke="#EF4444" strokeWidth="1.2" strokeLinejoin="round"/>
+                      <rect x="6.3" y="5.5" width="1.4" height="3.5" rx="0.7" fill="#EF4444"/>
+                      <circle cx="7" cy="10" r="0.7" fill="#EF4444"/>
+                    </svg>
+                    위험 예시
                   </button>
                   <button onClick={() => setTransactions(TX_NORMAL_EXAMPLE)}
-                    className="flex-1 text-xs py-1.5 rounded-lg border border-green-200 text-green-600 hover:bg-green-50 transition-colors">
-                    ✅ 정상 예시
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 text-sm font-medium py-2 rounded-lg bg-green-100 border border-green-300 text-green-700 hover:bg-green-200 transition-colors">
+                    <svg viewBox="0 0 14 14" fill="none" className="w-3.5 h-3.5">
+                      <circle cx="7" cy="7" r="5.5" fill="#D1FAE5" stroke="#059669" strokeWidth="1.2"/>
+                      <path d="M4.5 7 L6.5 9 L9.5 5" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    정상 예시
                   </button>
                 </div>
-                <textarea className="input-field resize-none text-sm" rows={5}
+                <textarea className="input-field resize-none text-base" rows={5}
                   placeholder="날짜 | 항목 | 금액 | 수신처 형식으로 입력하세요."
                   value={transactions} onChange={e => setTransactions(e.target.value)} />
               </div>
@@ -210,7 +278,17 @@ export default function CareAgent() {
                          rounded-xl py-3.5 font-bold text-sm transition-all
                          disabled:opacity-60 disabled:cursor-not-allowed
                          flex flex-col items-center gap-0.5">
-              <span>🤖 AI 에이전트 시작</span>
+              <span className="inline-flex items-center gap-2">
+                <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                  <rect x="4" y="8" width="12" height="9" rx="3" fill="white" opacity="0.9"/>
+                  <rect x="6" y="10" width="8" height="5" rx="1.5" fill="#2563EB"/>
+                  <circle cx="8.5" cy="12.5" r="1" fill="white"/>
+                  <circle cx="11.5" cy="12.5" r="1" fill="white"/>
+                  <line x1="10" y1="8" x2="10" y2="5.5" stroke="white" strokeWidth="1.3" strokeLinecap="round"/>
+                  <circle cx="10" cy="4.5" r="1.5" fill="white"/>
+                </svg>
+                AI 에이전트 시작
+              </span>
               <span className="text-xs font-normal text-blue-200">맞춤 분석을 시작해보세요</span>
             </button>
           </div>
@@ -218,7 +296,12 @@ export default function CareAgent() {
           {/* RIGHT: AI 분석 결과 */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
             <div className="flex items-center gap-2 mb-5">
-              <span className="text-lg">📋</span>
+              <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                <rect x="3" y="1" width="10" height="14" rx="2" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.2"/>
+                <line x1="5" y1="5" x2="11" y2="5" stroke="#2563EB" strokeWidth="1.1" strokeLinecap="round"/>
+                <line x1="5" y1="7.5" x2="11" y2="7.5" stroke="#2563EB" strokeWidth="1.1" strokeLinecap="round"/>
+                <line x1="5" y1="10" x2="8" y2="10" stroke="#2563EB" strokeWidth="1.1" strokeLinecap="round"/>
+              </svg>
               <h2 className="font-bold text-gray-800 text-base">AI 분석 결과</h2>
             </div>
 
@@ -248,7 +331,7 @@ export default function CareAgent() {
             )}
 
             {result && (
-              <div className="space-y-4 overflow-y-auto max-h-[600px] pr-1">
+              <div className="space-y-4">
                 {/* 재무 분석 */}
                 <div className="border border-gray-100 rounded-xl p-4">
                   <p className="text-sm font-bold text-gray-500 mb-2">① 재무 건전성</p>
@@ -256,9 +339,9 @@ export default function CareAgent() {
                     <span className="text-sm text-gray-500">위험도</span>
                     <RiskBadge level={result.fin_risk} />
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed">{result.fin_cashflow}</p>
+                  <p className="text-base text-gray-600 leading-relaxed">{result.fin_cashflow}</p>
                   {result.fin_risks && result.fin_risks !== '위험 요인 없음' && (
-                    <div className="alert-warning text-sm mt-2 whitespace-pre-wrap">{result.fin_risks}</div>
+                    <div className="alert-warning text-base mt-2 whitespace-pre-wrap">{result.fin_risks}</div>
                   )}
                 </div>
 
@@ -272,7 +355,7 @@ export default function CareAgent() {
                         <RiskBadge level={result.tx_risk} />
                       </div>
                       {result.tx_signals && result.tx_signals !== '없음' && (
-                        <div className="alert-warning text-sm whitespace-pre-wrap">{result.tx_signals}</div>
+                        <div className="alert-warning text-base whitespace-pre-wrap">{result.tx_signals}</div>
                       )}
                     </>
                   ) : (
@@ -284,19 +367,22 @@ export default function CareAgent() {
                 <div className="border border-gray-100 rounded-xl p-4">
                   <p className="text-sm font-bold text-gray-500 mb-2">③ 맞춤 케어 플랜</p>
                   {result.핵심_메시지 && (
-                    <div className={`mb-3 rounded-lg p-3 text-sm font-medium ${isUrgent ? 'alert-danger' : isCaution ? 'alert-warning' : 'alert-success'}`}>
-                      📌 {result.핵심_메시지}
+                    <div className={`mb-3 rounded-lg p-3 text-base font-medium flex items-start gap-2 ${isUrgent ? 'alert-danger' : isCaution ? 'alert-warning' : 'alert-success'}`}>
+                      <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 flex-shrink-0 mt-0.5">
+                        <path d="M8 2 L9 5 L12 5 L9.5 7 L10.5 10 L8 8.5 L5.5 10 L6.5 7 L4 5 L7 5 Z" fill="currentColor" opacity="0.7"/>
+                      </svg>
+                      {result.핵심_메시지}
                     </div>
                   )}
                   <div className="flex gap-1 mb-2">
                     {PLAN_TABS.map((t, i) => (
-                      <button key={t.label} onClick={() => setTab(i)}
+                      <button key={i} onClick={() => setTab(i)}
                         className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${tab === i ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'}`}>
                         {t.label}
                       </button>
                     ))}
                   </div>
-                  <div className={`text-sm whitespace-pre-wrap rounded-lg p-3 leading-relaxed ${PLAN_TABS[tab].cls}`}>
+                  <div className={`text-base whitespace-pre-wrap rounded-lg p-3 leading-relaxed ${PLAN_TABS[tab].cls}`}>
                     {PLAN_TABS[tab].content}
                   </div>
                 </div>
@@ -312,16 +398,29 @@ export default function CareAgent() {
                       </div>
                     ))}
                   </div>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-3">{result.final_summary}</p>
+                  <p className="text-base text-gray-600 leading-relaxed mb-3">{result.final_summary}</p>
                   <button onClick={downloadPdf}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 text-sm font-semibold transition-colors">
-                    📥 케어 리포트 PDF 다운로드
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <path d="M8 2 L8 10 M8 10 L5 7.5 M8 10 L11 7.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M2 12 L2 14 L14 14 L14 12" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    케어 리포트 PDF 다운로드
                   </button>
                 </div>
 
                 {/* JB 연계 */}
                 <div className="border border-gray-100 rounded-xl p-4">
-                  <p className="text-sm font-bold text-gray-500 mb-3">🏦 JB금융그룹 연계</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4">
+                      <rect x="1" y="7" width="14" height="8" rx="1.5" fill="#DBEAFE" stroke="#2563EB" strokeWidth="1.2"/>
+                      <path d="M4 7 L4 4 Q4 1 8 1 Q12 1 12 4 L12 7" stroke="#2563EB" strokeWidth="1.2" fill="none"/>
+                      <rect x="3" y="9" width="2" height="4" rx="0.5" fill="#2563EB"/>
+                      <rect x="7" y="9" width="2" height="4" rx="0.5" fill="#2563EB"/>
+                      <rect x="11" y="9" width="2" height="4" rx="0.5" fill="#2563EB"/>
+                    </svg>
+                    <p className="text-sm font-bold text-gray-500">JB금융그룹 연계</p>
+                  </div>
                   <div className="grid grid-cols-2 gap-2">
                     {(isUrgent
                       ? [['전북은행', '1588-4477'], ['광주은행', '1588-3388']]
@@ -329,7 +428,12 @@ export default function CareAgent() {
                     ).map(([name, tel]) => (
                       <div key={name} className={`rounded-lg p-3 text-center text-sm ${isUrgent ? 'alert-danger' : 'alert-success'}`}>
                         <p className="font-bold">{name}</p>
-                        <p className="mt-0.5">☎ {tel}</p>
+                        <p className="mt-0.5 inline-flex items-center gap-1">
+                          <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3">
+                            <path d="M3 1.5 Q2 1.5 1.5 2.5 Q1 3.5 2 5 Q3 6.5 4 7.5 Q5.5 9 6.5 9.5 Q8 10.5 9 10 Q10 9.5 10.5 8.5 Q11 7.5 10 7 L8.5 6 Q7.5 5.5 7 6 L6.5 6.5 Q6 7 5.5 6.5 Q4.5 5.5 4 4.5 Q3.5 4 4 3.5 L4.5 3 Q5 2.5 4.5 1.5 Z" fill="currentColor" opacity="0.8"/>
+                          </svg>
+                          {tel}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -342,8 +446,12 @@ export default function CareAgent() {
         {/* ── Tip bar ── */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-lg flex-shrink-0">
-              💡
+            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+                <path d="M10 2 Q14 2 14 6 Q14 9 11 10.5 L11 13 L9 13 L9 10.5 Q6 9 6 6 Q6 2 10 2 Z" fill="#BFDBFE" stroke="#2563EB" strokeWidth="1.3"/>
+                <rect x="9" y="14" width="2" height="2" rx="0.5" fill="#2563EB"/>
+                <path d="M7 17 L13 17" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round"/>
+              </svg>
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-800">분석 팁</p>
