@@ -235,9 +235,9 @@ export default function BucketList() {
                 <input className="input-field text-sm" placeholder={`꿈 ${i + 1}`}
                   value={item.name} onChange={e => setItem(i, 'name', e.target.value)} />
                 <input type="number" min={0} step={10} className="input-field text-sm"
-                  value={item.cost} onChange={e => setItem(i, 'cost', Number(e.target.value))} />
+                  value={item.cost || ''} onChange={e => setItem(i, 'cost', Number(e.target.value))} />
                 <input type="number" min={1} max={30} className="input-field text-sm"
-                  value={item.years} onChange={e => setItem(i, 'years', Number(e.target.value))} />
+                  value={item.years || ''} onChange={e => setItem(i, 'years', Number(e.target.value))} />
               </div>
             ))}
 

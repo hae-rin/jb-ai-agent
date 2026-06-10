@@ -254,7 +254,7 @@ def download_pdf(req: dict):
     pdf.set_fill_color(37, 99, 235)
     pdf.set_text_color(255, 255, 255)
     pdf.set_font("Malgun", "B", 17)
-    pdf.cell(W, 13, "안심케어 AI  종합 케어 리포트",
+    pdf.cell(W, 13, "Slowfit  종합 케어 리포트",
              fill=True, new_x="LMARGIN", new_y="NEXT", align="C")
     pdf.set_font("Malgun", "", 9)
     pdf.set_fill_color(219, 234, 254)
@@ -335,7 +335,7 @@ def download_pdf(req: dict):
     pdf.set_font("Malgun", "", 8); pdf.set_text_color(160, 160, 160)
     pdf.cell(W, 5, "본 리포트는 AI 분석 결과이며 실제 금융 상담을 대체하지 않습니다.",
              new_x="LMARGIN", new_y="NEXT", align="C")
-    pdf.cell(W, 5, "JB금융그룹 Fin:AI Challenge  |  안심케어 AI",
+    pdf.cell(W, 5, "JB금융그룹 Fin:AI Challenge  |  Slowfit",
              new_x="LMARGIN", new_y="NEXT", align="C")
 
     pdf_bytes = bytes(pdf.output())

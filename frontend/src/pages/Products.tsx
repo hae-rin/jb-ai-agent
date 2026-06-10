@@ -42,6 +42,7 @@ export default function Products() {
   const [goals, setGoals] = useState(['노후 생활 (10년 이상)'])
   const [riskLevel, setRiskLevel] = useState('안전 추구')
   const [monthlySave, setMonthlySave] = useState(50)
+  const [spareFund, setSpareFund] = useState(0)
   const [hasPension, setHasPension] = useState('없음')
   const [hasIrp, setHasIrp] = useState('없음')
   const [taxConcern, setTaxConcern] = useState('보통')
@@ -62,7 +63,7 @@ export default function Products() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           age: profile.age, income: profile.income, asset: profile.asset,
-          monthly_save: monthlySave, goals, risk_level: riskLevel,
+          monthly_save: monthlySave, spare_fund: spareFund, goals, risk_level: riskLevel,
           has_pension: hasPension, has_irp: hasIrp,
           tax_concern: taxConcern, has_loan: '없음',
           user_type: profile.user_type,
@@ -257,10 +258,15 @@ export default function Products() {
                 <div>
                   <label className="label">월 저축금액 (만원)</label>
                   <input type="number" min={0} step={5} className="input-field"
-                    value={monthlySave} onChange={e => setMonthlySave(Number(e.target.value))} />
+                    value={monthlySave || ''} onChange={e => setMonthlySave(Number(e.target.value))} />
                 </div>
                 <div>
-                  <label className="label">여유자금</label>
+                  <label className="label">여유자금 (만원)</label>
+                  <input type="number" min={0} step={100} className="input-field"
+                    value={spareFund || ''} onChange={e => setSpareFund(Number(e.target.value))} />
+                </div>
+                <div>
+                  <label className="label">연금 가입 여부</label>
                   <select className="input-field" value={hasPension} onChange={e => setHasPension(e.target.value)}>
                     {['없음', '미가입', '이미 가입'].map(v => <option key={v}>{v}</option>)}
                   </select>

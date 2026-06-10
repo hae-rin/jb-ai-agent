@@ -205,7 +205,7 @@ export default function Simulation() {
                 <div>
                   <label className="label">월 의료비 (만원)</label>
                   <input type="number" min={0} step={5} className="input-field"
-                    value={medical} onChange={e => setMedical(Number(e.target.value))} />
+                    value={medical || ''} onChange={e => setMedical(Number(e.target.value))} />
                 </div>
               </div>
               <div>

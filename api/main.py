@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 
 from api.routes import care_agent, simulation, doc_reader, products, bucket_list, voice_phishing, profile
 
-app = FastAPI(title="안심케어 AI API")
+app = FastAPI(title="Slowfit API")
 
 app.add_middleware(
     CORSMiddleware,

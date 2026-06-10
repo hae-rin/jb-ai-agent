@@ -428,7 +428,7 @@ export default function Home() {
               ))}
             </div>
             <button
-              onClick={() => nav('/simulation')}
+              onClick={() => nav('/care-agent')}
               className={`animate-fade-in-up-4 inline-flex items-center gap-2
                          bg-blue-600 hover:bg-blue-700 active:bg-blue-800
                          text-white font-bold ${isElder ? 'text-xl px-9 py-5' : 'text-base px-7 py-3.5'} rounded-2xl
@@ -440,7 +440,7 @@ export default function Home() {
                 <rect x="8" y="7"  width="4" height="11" rx="1" fill="white" opacity="0.9"/>
                 <rect x="13" y="3" width="4" height="15" rx="1" fill="white"/>
               </svg>
-              AI 시뮬레이션 시작하기 →
+              AI 종합 케어 시작하기 →
             </button>
           </div>
 
